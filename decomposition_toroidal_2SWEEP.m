@@ -1,5 +1,5 @@
 % ћультипольна€ декомпозици€ с выделением тороидального момента
-% ver 2.1.1
+% ver 2.1.2
 
 clc
 clear all;
@@ -467,14 +467,14 @@ MaxTxk = MaxValue(abs(TxK), fre, H, n_max);
 fig6 = figure(6);
 set(fig6, 'Units', 'normalized', 'OuterPosition', [0.01 0.045 0.98 0.95]);
 
-% «ависимость максимального значени€ Txk от высоты
+% Dependence: max of TxK according to Height
 subplot(1,2,1)
 plot(MaxTxk(4,:), MaxTxk(1,:), 'o');
 title('Max Tx according to h');
 xlabel ('Height, nm');
 ylabel ('Max Tx, a.u.');
 
-% «ависимость длины волны соответствующей максимальному значению Txk от высоты
+% Dependence: Wavelenght, corresponding to max TxK according to Height
 subplot(1,2,2)
 plot(MaxTxk(4,:), MaxTxk(3,:).*norm_length, 'o'); 
 title('the Wavelength coresponding to the Max Tx');
@@ -483,23 +483,23 @@ ylabel ('Wavelength, nm');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Maxscat = MaxValue(scat, fre, H, n_max); 
+Maxscat = MaxValue(scat./geomCS, fre, H, n_max); 
 
 fig7 = figure(7);
 set(fig7, 'Units', 'normalized', 'OuterPosition', [0.01 0.045 0.98 0.95]);
 
-% «ависимость максимального значени€ Txk от высоты
+% Dependence: max of Scattering Cross-Section (Comsol) according to Height
+
 subplot(1,2,1)
 plot(Maxscat(4,:), Maxscat(1,:), 'o');
 title('Max Scat. Cross-section (COMSOL) according to h');
 xlabel ('Height, nm');
 ylabel ('Max Tx, a.u.');
 
-% «ависимость длины волны соответствующей максимальному значению Txk от высоты
+% Dependence: Wavelenght, corresponding to max Cross-Section (Comsol) according to Height
 subplot(1,2,2)
 plot(Maxscat(4,:), Maxscat(3,:).*norm_length, 'o'); 
 title('the Wavelength coresponding to the Max Scat. Cross-section (COMSOL)');
 xlabel ('Height, nm');
 ylabel ('Wavelength, nm');
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
