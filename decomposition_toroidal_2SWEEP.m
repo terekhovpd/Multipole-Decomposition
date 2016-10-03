@@ -1,5 +1,5 @@
 % Мультипольная декомпозиция с выделением тороидального момента
-% ver 2.0
+% ver 2.1
 
 clc
 clear all;
@@ -382,7 +382,7 @@ pl1 = @(n) plot (lambda_nm(n,:), abs(Px(n,:))./geomCS, ...
 xlab1 = @() xlabel ('Wavelength, nm','FontSize', FontSize);
 ylab1 = @() ylabel ('dipole, a.u.','FontSize', FontSize);
 leg1 =  @() legend( 'ED','ED+TD','TD');
-tit1 = 	@(n) title(strcat('Height h = ', num2str(H(1,n)), ' nm'),'FontSize', FontSize);
+tit1 = 	@(n) title(strcat('Height h = ', num2str(H(n,1)), ' nm'),'FontSize', FontSize);
 slider_toroidal( fig1, pl1, xlab1, ylab1, leg1, tit1, n, n_min, n_max, H);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -398,7 +398,7 @@ pl2 = @(n) plot (lambda_nm(n,:), ExtPx(n,:)./geomCS, ...
 				lambda_nm(n,:), ExtOxzz(n,:)./geomCS, ...
                 lambda_nm(n,:), ExtCS(n,:)./geomCS, ...
 	 			'LineWidth', LineWidth);
-tit2 = @(n) title(strcat('Multipoles contributions to Extincntion, h = ', num2str(H(1,n)), ' nm' ),'FontSize', FontSize);
+tit2 = @(n) title(strcat('Multipoles contributions to Extincntion, h = ', num2str(H(n,1)), ' nm' ),'FontSize', FontSize);
 xlab2 = @() xlabel ('Wavelength ,nm','FontSize', FontSize);
 ylab2 = @() ylabel ('Multipoles contributions, um^2','FontSize', FontSize); % um - микрометры
 leg2 = @() legend('Px','Tx','Qxz','my','Myz','Oxzz','Total Ext-on Cross Sect. as Sum');
@@ -415,7 +415,7 @@ pl3 = @(n) plot (lambda_nm(n,:), abs(ExtCS(n,:))./geomCS, ...
 				lambda_nm(n,:), (scat(n,:)+absCS(n,:))./geomCS, ...
 				lambda_nm(n,:), ScatCS(n,:)./geomCS, ...
 	 			'LineWidth', LineWidth);
-tit3 = @(n) title(strcat('Cross section, h = ', num2str(H(1,n)), ' nm' ),'FontSize', FontSize);
+tit3 = @(n) title(strcat('Cross section, h = ', num2str(H(n,1)), ' nm' ),'FontSize', FontSize);
 xlab3 = @() xlabel ('Wavelength, nm','FontSize', FontSize);
 ylab3 = @() ylabel ('Cross section, mkm^2','FontSize', FontSize);
 leg3 = @() legend('Extincntion cross section','Scattering cross section from COMSOL','Absorption cross section from COMSOL', 'Extinction cross section from COMSOL (Abs+Scat)', 'Scatterning cross section' );
@@ -429,7 +429,7 @@ fig4 = figure (4);
 pl4 = @(n) plot (lambda_nm(n,:), ScatCS(n,:)./geomCS, ...
 				lambda_nm(n,:), scat(n,:)./geomCS, ...
 	 			'LineWidth', LineWidth);
-tit4 = @(n) title(strcat('Cross section, h = ', num2str(H(1,n)),' nm' ),'FontSize', FontSize);
+tit4 = @(n) title(strcat('Cross section, h = ', num2str(H(n,1)),' nm' ),'FontSize', FontSize);
 xlab4 = @() xlabel ('Wavelength, nm','FontSize', FontSize);
 ylab4 = @() ylabel ('Cross section, um^2','FontSize', FontSize);
 leg4 = @() legend('Scattering cross section', 'Scattering cross section from COMSOL');
@@ -446,7 +446,7 @@ pl5 = @(n) plot (lambda_nm(n,:), ScatD(n,:)./geomCS, ...
 				lambda_nm(n,:), ScatO(n,:)./geomCS, ...
 				lambda_nm(n,:), ScatCS(n,:)./geomCS, ...
 	 			'LineWidth', LineWidth);
-tit5 = @(n) title(strcat('Multipoles Contributions to Scattering, h = ', num2str(H(1,n)), ' nm' ),'FontSize', FontSize);
+tit5 = @(n) title(strcat('Multipoles Contributions to Scattering, h = ', num2str(H(n,1)), ' nm' ),'FontSize', FontSize);
 xlab5 = @() xlabel ('Wavelenght, nm','FontSize', FontSize);
 ylab5 = @() ylabel ('Multipoles Contributions, um^2','FontSize', FontSize);
 leg5 = @() legend('scat D ', 'scat m', 'scat Q', 'scat M', 'scat O', 'Sum Scat');

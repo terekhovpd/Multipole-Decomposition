@@ -1,5 +1,5 @@
 function slider_toroidal( fig, pl, xlab, ylab, leg, tit, n, n_min, n_max, h )
-% 1.1
+% 2.0
 % Слайдер для тороидальной декомпозиции
 % fig - дескриптор фигуры
 % pl - функция, которая строит график
@@ -63,7 +63,7 @@ uicontrol('Parent',fig,'Style','text','Units','normalized', ...
 uicontrol('Parent',fig,'Style','text','Units','normalized', ...
                 'Position',[sld_left + sld_width, sld_bottom, 1.5*sld_heigh , sld_heigh], ...
                 'FontUnits','normalized', 'FontSize', 0.7, ...
-                'String', h (1, n_max),'BackgroundColor', bgcolor);
+                'String', h (n_max, 1),'BackgroundColor', bgcolor);
 
 	function setvalue (source, dataevent)
 	    n = fix(source.Value); 	% сохраняем в n целую часть числа source.Value
