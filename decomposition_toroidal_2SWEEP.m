@@ -1,5 +1,6 @@
 % Мультипольная декомпозиция с выделением тороидального момента
 % ver 1.1.31
+% Everething that hapen here will stay here
 
 clc
 clear all;
