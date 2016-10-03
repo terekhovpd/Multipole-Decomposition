@@ -1,5 +1,5 @@
 % Мультипольная декомпозиция с выделением тороидального момента
-% ver 2.1
+% ver 2.1.1
 
 clc
 clear all;
@@ -7,7 +7,7 @@ clear all;
 norm_length = 1e9; % величина, на которую домножаем, чтобы перевести метры в нанометры
 % norm_length = 1e6; % величина, на которую домножаем, чтобы перевести метры в микрометры
 
-n_max = 3;	% задавать вручную, число шагов в parametric sweep, максимальное значение слайдера
+n_max = 10;	% задавать вручную, число шагов в parametric sweep, максимальное значение слайдера
 n_min = 1;	% минимальное значение слайдера
 n = 1;     	% первоначальное значение слайдера
 
@@ -483,3 +483,23 @@ ylabel ('Wavelength, nm');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+Maxscat = MaxValue(scat, fre, H, n_max); 
+
+fig7 = figure(7);
+set(fig7, 'Units', 'normalized', 'OuterPosition', [0.01 0.045 0.98 0.95]);
+
+% Зависимость максимального значения Txk от высоты
+subplot(1,2,1)
+plot(Maxscat(4,:), Maxscat(1,:), 'o');
+title('Max Scat. Cross-section (COMSOL) according to h');
+xlabel ('Height, nm');
+ylabel ('Max Tx, a.u.');
+
+% Зависимость длины волны соответствующей максимальному значению Txk от высоты
+subplot(1,2,2)
+plot(Maxscat(4,:), Maxscat(3,:).*norm_length, 'o'); 
+title('the Wavelength coresponding to the Max Scat. Cross-section (COMSOL)');
+xlabel ('Height, nm');
+ylabel ('Wavelength, nm');
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
