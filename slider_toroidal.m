@@ -1,5 +1,5 @@
 function slider_toroidal( fig, pl, xlab, ylab, leg, tit, n, n_min, n_max, h )
-% 1.0
+% 1.1
 % Слайдер для тороидальной декомпозиции
 % fig - дескриптор фигуры
 % pl - функция, которая строит график
@@ -13,7 +13,7 @@ function slider_toroidal( fig, pl, xlab, ylab, leg, tit, n, n_min, n_max, h )
 % set(0,'DefaultAxesFontSize', 15,'DefaultAxesFontName','Arial');
 % set(0,'DefaultTextFontSize', 15,'DefaultTextFontName','Arial'); 
 
-set(fig, 'Units', 'normalized', 'OuterPosition', [0.1 0.07 0.8 0.92]);
+set(fig, 'Units', 'normalized', 'OuterPosition', [0.01 0.045 0.98 0.95]);
 
 bgcolor = fig.Color;
 % bgcolor = 'white';
