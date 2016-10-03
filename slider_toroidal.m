@@ -1,5 +1,5 @@
 function slider_toroidal( fig, pl, xlab, ylab, leg, tit, n, n_min, n_max, h )
-% 1.4
+% 1.1
 % Слайдер для тороидальной декомпозиции
 % fig - дескриптор фигуры
 % pl - функция, которая строит график
