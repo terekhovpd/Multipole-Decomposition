@@ -1,55 +1,67 @@
-% Мультипольная декомпозиция с выделением тороидального момента
-% ver 2.2.0
+% Multipole Decomposotion with toroidal moment separation.
+% ver 2.2.3
 
 clc
 clear all;
 
-norm_length = 1e9; % величина, на которую домножаем, чтобы перевести метры в нанометры
-% norm_length = 1e6; % величина, на которую домножаем, чтобы перевести метры в микрометры
+norm_length = 1e9;   % value to multiply for m->nm converting  % величина, на которую домножаем, чтобы перевести метры в нанометры
+% norm_length = 1e6; % value to multiply for m->um converting  % величина, на которую домножаем, чтобы перевести метры в микрометры
 
-n_max = 10;	% задавать вручную, число шагов в parametric sweep, максимальное значение слайдера
-n_min = 4;	% минимальное значение слайдера
-n = 4;     	% первоначальное значение слайдера
+n_max = 10;	% set MANUALLY, number of parametric sweep steps, maximum graphic slider parameter  % задавать вручную, число шагов в parametric sweep, максимальное значение слайдера
+n_min = 4;	% minimum graphic slider parameter                                                  % минимальное значение слайдера
+n = 4;     	% The original (first after fig creating) graphic slider parameter                  % первоначальное значение слайдера
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Constants
-mu0 = 1.25663706 * 10^(-6);	% магнитная постоянная 
-eps0 = 8.85 * 10^(-12);		% электрическая постоянная
-c = 2.998e+8; 				% скорость света
-% Z = 120*pi; 				% для фазовых диаграмм
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-epsilon_tbl = dlmread ('Px.txt', '' ,5,0); 	% считывет данные из файла, обрезает 5 верхних строк
+mu0 = 1.25663706 * 10^(-6);	% Vacuum permeability (magnetic constant)     % магнитная постоянная 
+eps0 = 8.85 * 10^(-12);		% Vacuum permittivity (electric constant)     % электрическая постоянная
+c = 2.998e+8; 				% speed of light                              % скорость света
+% Z = 120*pi; 				% for phase diagrams, still legacy parameter  % для фазовых диаграмм
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Делаем массив частот
-FRE = unique( epsilon_tbl(:, 1)');	% считывает из 1 колонки все элементы и оставляем только уникальные
-length_fre = size(FRE,2);			% число шагов по частоте, длина вектора частот
-fre = ones(n_max, length_fre);
-for i = 1:1:n_max
-	fre(i,:) = fre(i,:) .* FRE; 	% делаем из вектор-стобца fre матрицу, состоящую из n_max вектор-стобцов fre
-end
-clear FRE;
-lambda = c./fre;  					% длина волны - скорость света делить на частоту
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-epsd = 1;		 	% диэлектричекая проницаемость среды снаружи частицы
-k0 = - 2*pi*fre/c; 	% волновой вектор 
-				  	% минус потому что в COMSOL задан минус в мнимой экспоненте e^(-i k*x), описывающей падающее излучение
-
-kd = k0 .* sqrt(epsd); % волновой вектор в среде
-vd2 = c ./ sqrt(epsd); % скорость света в среде, vd для сечения рассеяния без зависимости от минуса в k0
-% vd = c ./ sqrt(epsd);
-vd = 2.*pi.*fre./( k0 .* sqrt(epsd) ); 	% тоже скорость света в среде. С этим vd хорошо считается экстинкция.
+% Independent Variables
 
 E0x = 1 ; 
 E0 = 1;
-rad = 100e-9;	% сторона основания пирамиды В МЕТРАХ, ПРОВЕРЯТЬ если нормируем на эффективное сечение!
-geomCS = rad^2; % эффективное поперечное сечение рассеяния для нормировки на него
-% geomCS = 1e-18; % нормировка на нм обычная!
+
+rad = 100e-9;	% base edge of pyramid/parallelepiped/etc or radius of sphere/cilinder/cone/etc, in METERS, MANUALLY, for Normalization! MUST BE CHECKED.  % сторона основания пирамиды В МЕТРАХ, ПРОВЕРЯТЬ если нормируем на эффективное сечение!
+%geomCS = rad^2; % effective geometrical cross-section for normalization, if it has square shape.  % эффективное поперечное сечение рассеяния для нормировки на него
+geomCS = pi*rad^2; % effective geometrical cross-section for normalization, if it has circle shape. 
+% geomCS = 1e-18; % for usual normalization by nm  % нормировка на нм обычная!
+% geomCS = 1e-12; % for usual normalization by um  % нормировка на мкм обычная!
+  
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+epsilon_tbl = dlmread ('Px.txt', '' ,5,0); 	% read data from file, delete 5 top strings (header in COMSOL export files) % считывет данные из файла, обрезает 5 верхних строк
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Height в метрах
+% Frequency array creating
+FRE = unique( epsilon_tbl(:, 1)');	% read all elements from 1 column and leave only unique elements % считывает из 1 колонки все элементы и оставляем только уникальные                                                      
+length_fre = size(FRE,2);			% number of frequency steps, frequency vector length  % число шагов по частоте, длина вектора частот                                                                 
+fre = ones(n_max, length_fre);
+for i = 1:1:n_max
+	fre(i,:) = fre(i,:) .* FRE; 	% create the matrix, containing n_max column-vectors fre, from one column-vector fre (for matrix dimension match)   % делаем из вектор-стобца fre матрицу, состоящую из n_max вектор-стобцов fre
+end
+clear FRE;
+lambda = c./fre;  					% wavelength as speed of light divided by frequency % длина волны - скорость света делить на частоту
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+epsd = 1;		 	% Permittivity of environment outside of the particle % диэлектричекая проницаемость среды снаружи частицы
+k0 = - 2*pi*fre/c; 	% k-vector % волновой вектор
+				  	% minus here, cause at COMSOL there is minus at the imaginary exponent e^(-i k*x), describing incident radiation
+				  	% минус потому что в COMSOL задан минус в мнимой экспоненте e^(-i k*x), описывающей падающее излучение
+
+kd = k0 .* sqrt(epsd); % k-vector in the environment outside of the particle % волновой вектор в среде
+vd2 = c ./ sqrt(epsd); % speed of light in the environment outside of the particle, vd for scattering cross-section without dependence of minus in k0 
+					   % скорость света в среде, vd для сечения рассеяния без зависимости от минуса в k0
+
+% vd = c ./ sqrt(epsd);
+vd = 2.*pi.*fre./( k0 .* sqrt(epsd) ); 	% speed of light in the environment too, with this vd extinction calculations works well.
+										% тоже скорость света в среде. С этим vd хорошо считается экстинкция.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Height, Meters
+% Высота в метрах
 H = ones(n_max, length_fre);
 for i = 1:1:length_fre
 H(:,i) = H(:,i) .* epsilon_tbl(1+(i-1)*n_max : 1 : i*n_max, 2);
@@ -63,7 +75,7 @@ end
 epsilon_tbl = dlmread ('Py.txt', '' ,5,0);
 Py = ones(n_max, length_fre);
 for i = 1:1:length_fre
-Py(:,i) = Py(:,i) .* epsilon_tbl(1+(i-1)*n_max : 1 : i*n_max, 4);	% считывает из 4 колонки начиная с n-ного элемента каждый n_max элемент
+Py(:,i) = Py(:,i) .* epsilon_tbl(1+(i-1)*n_max : 1 : i*n_max, 4);	% read each n_max-th element from 4-th column, beginning from n-th element % считывает из 4 колонки начиная с n-ного элемента каждый n_max элемент
 end
 
 epsilon_tbl = dlmread ('Pz.txt', '' ,5,0);
@@ -90,12 +102,13 @@ for i = 1:1:length_fre
 Tz(:,i) = Tz(:,i) .* epsilon_tbl(1+(i-1)*n_max : 1 : i*n_max, 4);
 end
 
+% Scattering cross-section normalization by Poynting vector of incident radiation
 % нормировка сечения рассеяния на вектор пойнтинга падающего излучения
 epsilon_tbl=dlmread ('scat.txt', '' ,5,0);
 scat  = ones(n_max, length_fre);
 for i = 1:1:length_fre
-scat(:,i) = scat(:,i) .* epsilon_tbl(1+(i-1)*n_max : 1 : i*n_max, 4) ./ 1.3E-3;	% сечение рассеяния в Ваттах
-end                   % нормировка сечения рассеяния на вектор пойнтинга падающего излучения
+scat(:,i) = scat(:,i) .* epsilon_tbl(1+(i-1)*n_max : 1 : i*n_max, 4) ./ 1.3E-3;	% Scattering cross-section, Watts % сечение рассеяния в Ваттах
+end                   % cross-section normalization by Poynting vector of incident radiation  % нормировка сечения на вектор пойнтинга падающего излучения
 
 epsilon_tbl=dlmread ('mx.txt', '' ,5,0);
 mx  = ones(n_max, length_fre);
@@ -301,14 +314,15 @@ for i = 1:1:length_fre
 Lambdaz(:,i) = Lambdaz(:,i) .* epsilon_tbl(1+(i-1)*n_max : 1 : i*n_max, 4);
 end
 
-epsilon_tbl = dlmread ('absCS.txt', '' ,5,0); % поглощение в Ваттах
+epsilon_tbl = dlmread ('absCS.txt', '' ,5,0); % Absorption, Watts % поглощение в Ваттах
 absCS  = ones(n_max, length_fre);
 for i = 1:1:length_fre
 absCS(:,i) = absCS(:,i) .* epsilon_tbl(1+(i-1)*n_max : 1 : i*n_max, 4);
 end
-absCS = absCS ./ 1.3E-3;    % нормировка поглощения на вектор пойнтинга падающего излучения
+absCS = absCS ./ 1.3E-3;    % absorption normalization by Poynting vector of incident radiation   % нормировка поглощения на вектор пойнтинга падающего излучения
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% Extinction components for the wave, directed along Z and polarized along X
 % Компоненты экстинкции для волны направленной по Z и поляризованной по X
 ExtPx 	= ( kd ./ (eps0.*epsd .* abs(E0x).^2) ) .* imag( conj(E0x) .* Px);
 ExtTx 	= ( kd ./ (eps0.*epsd .* abs(E0x).^2) ) .* imag( conj(E0x) .* ((1i.*kd./vd).*1.*Tx) );
@@ -322,31 +336,35 @@ TxK = ((1i.*kd./vd) .* Tx);
 TyK = ((1i.*kd./vd) .* Ty);
 TzK = ((1i.*kd./vd) .* Tz);
 
-% Экстинкция как сумма мультипольных составляющий
+% Extinction as sum of multipole components
+% Экстинкция как сумма мультипольных составляющиx
 ExtCS = ExtPx+ExtTx+ExtQxz+Extmy+ExtMyz+ExtOxzz;
 
+% Components of Total Electric Dipole Moment (TED)
 % Компоненты полного электрического дипольного момента
 Dx = Px - (1i.*k0.*epsd./c).*Tx;
 Dy = Py - (1i.*k0.*epsd./c).*Ty;
 Dz = Pz - (1i.*k0.*epsd./c).*Tz;
 
-% I incident - вектор пойнтинга падающей волны, плотность потока мощности
+% I incident - Poynting vector of incident wave, power flux density
+% вектор пойнтинга падающей волны, плотность потока мощности
 Iinc = ((eps0*epsd/mu0)^0.5*E0/2);
 
+% Contributions of separate miltipoles at the power scattering, normalized by Poynting vector
 % Вклады отдельных мультиполей в рассеяние мощности нормированные на вектор пойнтинга
-ScatD = (k0.^4./(12.*pi.*eps0.^2.*vd2.*mu0)) .* (abs(Dx).^2 + abs(Dy).^2 + abs(Dz).^2) ./ Iinc; 	% диполь
+ScatD = (k0.^4./(12.*pi.*eps0.^2.*vd2.*mu0)) .* (abs(Dx).^2 + abs(Dy).^2 + abs(Dz).^2) ./ Iinc; 	% Electric Dipole % диполь
 
-Scatm = ((k0.^4.*epsd./(12.*pi*eps0.*vd2)) .* (abs(mx).^2+abs(my).^2+abs(mz).^2)) ./ Iinc;  % магнитный диполь
+Scatm = ((k0.^4.*epsd./(12.*pi*eps0.*vd2)) .* (abs(mx).^2+abs(my).^2+abs(mz).^2)) ./ Iinc;  % Magnetic Dipole % магнитный диполь
 
-ScatQ=((k0.^6.*epsd./(1440.*pi.*eps0.^2.*vd2.*mu0))... 									% электрический квадруполь
+ScatQ=((k0.^6.*epsd./(1440.*pi.*eps0.^2.*vd2.*mu0))... 									% Electric Quadrupole % электрический квадруполь
     .*(abs(Qxx).^2+abs(Qxy).^2+abs(Qxz).^2+abs(Qyx).^2+abs(Qyy).^2+abs(Qyz).^2+...
     abs(Qzx).^2+abs(Qzy).^2+abs(Qzz).^2)) ./ Iinc; 											
 
-ScatM = ((k0.^6.*epsd.^2./(160.*pi*eps0.^1.*vd2)) ...									% магнитный квадруполь
+ScatM = ((k0.^6.*epsd.^2./(160.*pi*eps0.^1.*vd2)) ...									% Magnetic quadrupole % магнитный квадруполь
     .*(abs(Mxx).^2+abs(Mxy).^2+abs(Mxz).^2+abs(Myx).^2+abs(Myy).^2+abs(Myz).^2+...
     abs(Mzx).^2+abs(Mzy).^2+abs(Mzz).^2) ) ./ Iinc; 										
 
-% запчасти от октуполья из комсола
+% octupole parts from COMSOL % запчасти от октуполя из комсола
 FullOxyz = Oxyz;
 FullOxxy = Oxxy-Lambday;
 FullOxxz = Oxxz-Lambdaz;
@@ -358,18 +376,19 @@ FullOxxx = Oxxx-3.*Lambdax;
 FullOyyy = Oyyy-3.*Lambday;
 FullOzzz = Ozzz-3.*Lambdaz;
 
-ScatO = ((k0.^8.*epsd.^2./(3780.*pi.*eps0.^2.*vd2.*mu0)).*(6.*abs(FullOxyz).^2+3.*abs(FullOxxy).^2+...	% электрический октуполь
+ScatO = ((k0.^8.*epsd.^2./(3780.*pi.*eps0.^2.*vd2.*mu0)).*(6.*abs(FullOxyz).^2+3.*abs(FullOxxy).^2+...	% Electric Octupole % электрический октуполь
     3.*abs(FullOxxz).^2+3.*abs(FullOyyx).^2+3.*abs(FullOyyz).^2+3.*abs(FullOzzx).^2+...
     3.*abs(FullOzzy).^2+abs(FullOxxx).^2+abs(FullOyyy).^2+abs(FullOzzz).^2)) ./ Iinc ;  		
                 
+% Scattering cross-section as sum of multipole components
 % Сечение рассеяние как сумма мультипольных компонентов
 ScatCS = (ScatD + Scatm + ScatQ + ScatM + ScatO) ; 
 
 
-lambda_nm = lambda .* norm_length; 	% переводим длину волны из метров в нанометры
-H = H .* norm_length; 				% переводим высоту в нанометры
-FontSize = 15; 			% размер шрифта в подписях
-LineWidth = 2.3; 		% толщина линии на графиках
+lambda_nm = lambda .* norm_length; 	% converting wavelenght from m to nm % переводим длину волны из метров в нанометры
+H = H .* norm_length; 				% converting height to nm % переводим высоту в нанометры
+FontSize = 15; 			% font size at the titles % размер шрифта в подписях
+LineWidth = 2.3; 		% Line Width at the graphics % толщина линии на графиках
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -388,6 +407,7 @@ slider_toroidal( fig1, pl1, xlab1, ylab1, leg1, tit1, n, n_min, n_max, H);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Multipoles contributions to Extincntion
+% Вклады мультиполей в экстинкцию
 fig2 = figure(2);
 
 pl2 = @(n) plot (lambda_nm(n,:), ExtPx(n,:)./geomCS, ...
@@ -406,7 +426,7 @@ slider_toroidal( fig2, pl2, xlab2, ylab2, leg2, tit2, n, n_min, n_max, H );
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Все сечения 
+% All Cross-sections % Все сечения 
 fig3 = figure(3);
 
 pl3 = @(n) plot (lambda_nm(n,:), abs(ExtCS(n,:))./geomCS, ...
@@ -423,7 +443,7 @@ slider_toroidal( fig3, pl3, xlab3, ylab3, leg3, tit3, n, n_min, n_max, H );
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Только рассеяния
+% Scattering cross-sections only % Только рассеяния
 fig4 = figure (4);
 
 pl4 = @(n) plot (lambda_nm(n,:), ScatCS(n,:)./geomCS, ...
@@ -454,11 +474,11 @@ slider_toroidal( fig5, pl5, xlab5, ylab5, leg5, tit5, n, n_min, n_max, H );
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% В MaxValue 
-% 1 строка - максимальное значение величины
-% 2 строка - частота соответствующая этому значению
-% 3 строка - длина волны соответствующая этому значению
-% 4 строка - значение параметра которому соответствует максимальное значение
+% At the MaxValue 
+% 1st line - maximum value                                        % 1 строка - максимальное значение величины
+% 2nd line - frequency, corresponding to this value               % 2 строка - частота соответствующая этому значению
+% 3rd line - wavelenght, corresponding to this value              % 3 строка - длина волны соответствующая этому значению
+% 4th line - value of parameter, corresponding to maximum value   % 4 строка - значение параметра которому соответствует максимальное значение
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
