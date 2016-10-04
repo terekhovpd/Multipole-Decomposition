@@ -1,5 +1,5 @@
 % Multipole Decomposotion with toroidal moment separation.
-% ver 2.2.06
+% ver 2.3
 
 clc
 clear all;
@@ -392,11 +392,16 @@ LineWidth = 2.3; 		% Line Width at the graphics % толщина линии на графиках
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+minPxTx = LocalMin( abs(TxK + Px), n_max );
+maxPxTx = LocalMax( abs(TxK + Px), n_max );
+
 fig1 = figure (1);
 
 pl1 = @(n) plot (lambda_nm(n,:), abs(Px(n,:))./geomCS, ...
 	 			lambda_nm(n,:), abs(TxK(n,:) + Px(n,:))./geomCS, ...
 	 			lambda_nm(n,:), abs(TxK(n,:))./geomCS, ...
+	 			lambda_nm(n, minPxTx{n}(:,1)), minPxTx{n}(:,2)./geomCS, 'o', ...
+	 			lambda_nm(n, maxPxTx{n}(:,1)), maxPxTx{n}(:,2)./geomCS, 'o', ...
 	 			'LineWidth', LineWidth);
 xlab1 = @() xlabel ('Wavelength, nm','FontSize', FontSize);
 ylab1 = @() ylabel ('dipole, a.u.','FontSize', FontSize);
