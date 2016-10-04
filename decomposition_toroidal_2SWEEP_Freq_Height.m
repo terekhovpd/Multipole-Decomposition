@@ -1,5 +1,5 @@
 % Multipole Decomposotion with toroidal moment separation.
-% ver 2.2.3
+% ver 2.2.4
 
 clc
 clear all;
@@ -8,7 +8,7 @@ norm_length = 1e9;   % value to multiply for m->nm converting  % величина, на ко
 % norm_length = 1e6; % value to multiply for m->um converting  % величина, на которую домножаем, чтобы перевести метры в микрометры
 
 n_max = 10;	% set MANUALLY, number of parametric sweep steps, maximum graphic slider parameter  % задавать вручную, число шагов в parametric sweep, максимальное значение слайдера
-n_min = 4;	% minimum graphic slider parameter                                                  % минимальное значение слайдера
+n_min = 4;	% minimum graphic slider parameter and first considered parameter                   % минимальное значение слайдера; случаи с меньшим номером параметра не будут выводиться
 n = 4;     	% The original (first after fig creating) graphic slider parameter                  % первоначальное значение слайдера
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -491,14 +491,14 @@ set(fig6, 'Units', 'normalized', 'OuterPosition', [0.01 0.045 0.98 0.95]);
 % Dependence: max of Scattering Cross-Section (Comsol) according to Height
 
 subplot(1,2,1)
-plot(Maxscat(4,:), Maxscat(1,:), 'r--o');
+plot(Maxscat(4,n_min:end), Maxscat(1,n_min:end), 'r--o');
 title('Max Scat. Cross-section (COMSOL) according to h');
 xlabel ('Height, nm');
 ylabel ('Max Scat C-S, a.u.');
 
 % Dependence: Wavelenght, corresponding to max Scattering Cross-Section (Comsol) according to Height
 subplot(1,2,2)
-plot(Maxscat(4,:), Maxscat(3,:).*norm_length, 'r--o'); 
+plot(Maxscat(4,n_min:end), Maxscat(3,n_min:end).*norm_length, 'r--o'); 
 title('the Wavelength corresponding to the Max Scat. Cross-section (COMSOL)');
 xlabel ('Height, nm');
 ylabel ('Res Wavelength, nm');
@@ -513,14 +513,14 @@ set(fig7, 'Units', 'normalized', 'OuterPosition', [0.01 0.045 0.98 0.95]);
 % Dependence: max of Absorption Cross-Section (Comsol) according to Height
 
 subplot(1,2,1)
-plot(MaxAbs(4,:), MaxAbs(1,:), 'r--o');
+plot(MaxAbs(4,n_min:end), MaxAbs(1,n_min:end), 'r--o');
 title('Max Abs. Cross-section (COMSOL) according to h');
 xlabel ('Height, nm');
 ylabel ('Max Abs C-S, a.u.');
 
 % Dependence: Wavelenght, corresponding to max Absorption Cross-Section (Comsol) according to Height
 subplot(1,2,2)
-plot(MaxAbs(4,:), MaxAbs(3,:).*norm_length, 'r--o'); 
+plot(MaxAbs(4,n_min:end), MaxAbs(3,n_min:end).*norm_length, 'r--o'); 
 title('the Wavelength corresponding to the Max Abs. Cross-section (COMSOL)');
 xlabel ('Height, nm');
 ylabel ('Res Wavelength, nm');
@@ -534,14 +534,14 @@ set(fig8, 'Units', 'normalized', 'OuterPosition', [0.01 0.045 0.98 0.95]);
 % Dependence: max of Scattering component by Total Electric Dipole according to Height
 
 subplot(1,2,1)
-plot(MaxScatD(4,:), MaxScatD(1,:), 'r--o');
+plot(MaxScatD(4,n_min:end), MaxScatD(1,n_min:end), 'r--o');
 title('Max TED according to h');
 xlabel ('Height, nm');
 ylabel ('Max scat TED, a.u.');
 
 % Dependence: Wavelenght, corresponding to max of scattering component by Total Electric Dipole according to Height
 subplot(1,2,2)
-plot(MaxScatD(4,:), MaxScatD(3,:).*norm_length, 'r--o'); 
+plot(MaxScatD(4,n_min:end), MaxScatD(3,n_min:end).*norm_length, 'r--o'); 
 title('the Wavelength corresponding to the Max TED');
 xlabel ('Height, nm');
 ylabel ('Res Wavelength, nm');
@@ -553,14 +553,14 @@ set(fig9, 'Units', 'normalized', 'OuterPosition', [0.01 0.045 0.98 0.95]);
 
 % Dependence: max of Scattering component by Magnetic Dipole according to Height
 subplot(1,2,1)
-plot(Maxm(4,:), Maxm(1,:), 'r--o');
+plot(Maxm(4,n_min:end), Maxm(1,n_min:end), 'r--o');
 title('Max magnetic dipole according to h');
 xlabel ('Height, nm');
 ylabel ('Max scat m, a.u.');
 
 % Dependence: Wavelenght, corresponding to max Magnetic Dipole according to Height
 subplot(1,2,2)
-plot(Maxm(4,:), Maxm(3,:).*norm_length, 'r--o'); 
+plot(Maxm(4,n_min:end), Maxm(3,n_min:end).*norm_length, 'r--o'); 
 title('the Wavelength coresponding to the Max m');
 xlabel ('Height, nm');
 ylabel ('Wavelength, nm');
@@ -573,14 +573,14 @@ set(fig10, 'Units', 'normalized', 'OuterPosition', [0.01 0.045 0.98 0.95]);
 
 % Dependence: max of Scattering component by Electric Quadrupole according to Height
 subplot(1,2,1)
-plot(MaxQ(4,:), MaxQ(1,:), 'r--o');
+plot(MaxQ(4,n_min:end), MaxQ(1,n_min:end), 'r--o');
 title('Max Electric Quadrupole according to h');
 xlabel ('Height, nm');
 ylabel ('Max scat Q, a.u.');
 
 % Dependence: Wavelenght, corresponding to max Electric Quadrupole according to Height
 subplot(1,2,2)
-plot(MaxQ(4,:), MaxQ(3,:).*norm_length, 'r--o'); 
+plot(MaxQ(4,n_min:end), MaxQ(3,n_min:end).*norm_length, 'r--o'); 
 title('the Wavelength coresponding to the Max Q');
 xlabel ('Height, nm');
 ylabel ('Wavelength, nm');
@@ -593,14 +593,14 @@ set(fig11, 'Units', 'normalized', 'OuterPosition', [0.01 0.045 0.98 0.95]);
 
 % Dependence: max of Scattering component by Magnetic Quadrupole according to Height
 subplot(1,2,1)
-plot(MaxM(4,:), MaxM(1,:), 'r--o');
+plot(MaxM(4,n_min:end), MaxM(1,n_min:end), 'r--o');
 title('Max magnetic Quadrupole according to h');
 xlabel ('Height, nm');
 ylabel ('Max scat M, a.u.');
 
 % Dependence: Wavelenght, corresponding to max Magnetic Quadrupole to Height
 subplot(1,2,2)
-plot(MaxM(4,:), MaxM(3,:).*norm_length, 'r--o'); 
+plot(MaxM(4,n_min:end), MaxM(3,n_min:end).*norm_length, 'r--o'); 
 title('the Wavelength coresponding to the Max M');
 xlabel ('Height, nm');
 ylabel ('Wavelength, nm');
