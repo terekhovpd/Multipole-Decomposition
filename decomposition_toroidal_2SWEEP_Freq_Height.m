@@ -1,5 +1,5 @@
 % Multipole Decomposotion with toroidal moment separation.
-% ver 2.2.4
+% ver 2.2.05
 
 clc
 clear all;
@@ -25,8 +25,8 @@ E0x = 1 ;
 E0 = 1;
 
 rad = 100e-9;	% base edge of pyramid/parallelepiped/etc or radius of sphere/cilinder/cone/etc, in METERS, MANUALLY, for Normalization! MUST BE CHECKED.  % сторона основания пирамиды В МЕТРАХ, ПРОВЕРЯТЬ если нормируем на эффективное сечение!
-%geomCS = rad^2; % effective geometrical cross-section for normalization, if it has square shape.  % эффективное поперечное сечение рассеяния для нормировки на него
-geomCS = pi*rad^2; % effective geometrical cross-section for normalization, if it has circle shape. 
+geomCS = rad^2; % effective geometrical cross-section for normalization, if it has square shape.  % эффективное поперечное сечение рассеяния для нормировки на него
+%geomCS = pi*rad^2; % effective geometrical cross-section for normalization, if it has circle shape. 
 % geomCS = 1e-18; % for usual normalization by nm  % нормировка на нм обычная!
 % geomCS = 1e-12; % for usual normalization by um  % нормировка на мкм обычная!
   
@@ -602,6 +602,29 @@ ylabel ('Max scat M, a.u.');
 subplot(1,2,2)
 plot(MaxM(4,n_min:end), MaxM(3,n_min:end).*norm_length, 'r--o'); 
 title('the Wavelength coresponding to the Max M');
+xlabel ('Height, nm');
+ylabel ('Wavelength, nm');
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+MaxRel = MaxValue(abs(TxK+Px)./abs(Px), fre, H, n_max); 
+
+fig12 = figure(12);
+set(fig12, 'Units', 'normalized', 'OuterPosition', [0.01 0.045 0.98 0.95]);
+
+% Dependence: max of (TD+ED)/ED according to Height
+% Зависимость максимума отношения суммы тороидального и электрического дипольного моментов от высоты
+subplot(1,2,1)
+plot(MaxRel(4,n_min:end), MaxRel(1,n_min:end), 'r--o');
+title('Max (TD+ED)/ED according to h');
+xlabel ('Height, nm');
+ylabel ('Max scat M, a.u.');
+
+% Dependence: Wavelenght, corresponding to max (TD+ED)/ED to Height
+% Зависимость длины волны, соответствующей максимуму отношения суммы тороидального и электрического дипольного моментов, от высоты
+subplot(1,2,2)
+plot(MaxRel(4,n_min:end), MaxRel(3,n_min:end).*norm_length, 'r--o'); 
+title('the Wavelength coresponding to the Max (TD+ED)/ED');
 xlabel ('Height, nm');
 ylabel ('Wavelength, nm');
 
