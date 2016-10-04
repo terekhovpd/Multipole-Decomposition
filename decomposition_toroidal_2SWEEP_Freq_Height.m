@@ -1,5 +1,5 @@
 % Multipole Decomposotion with toroidal moment separation.
-% ver 2.2.05
+% ver 2.2.06
 
 clc
 clear all;
@@ -490,14 +490,14 @@ set(fig6, 'Units', 'normalized', 'OuterPosition', [0.01 0.045 0.98 0.95]);
 
 % Dependence: max of Scattering Cross-Section (Comsol) according to Height
 
-subplot(1,2,1)
+subplot(1,2,1); hold on;
 plot(Maxscat(4,n_min:end), Maxscat(1,n_min:end), 'r--o');
 title('Max Scat. Cross-section (COMSOL) according to h');
 xlabel ('Height, nm');
 ylabel ('Max Scat C-S, a.u.');
 
 % Dependence: Wavelenght, corresponding to max Scattering Cross-Section (Comsol) according to Height
-subplot(1,2,2)
+subplot(1,2,2); hold on;
 plot(Maxscat(4,n_min:end), Maxscat(3,n_min:end).*norm_length, 'r--o'); 
 title('the Wavelength corresponding to the Max Scat. Cross-section (COMSOL)');
 xlabel ('Height, nm');
@@ -512,14 +512,14 @@ set(fig7, 'Units', 'normalized', 'OuterPosition', [0.01 0.045 0.98 0.95]);
 
 % Dependence: max of Absorption Cross-Section (Comsol) according to Height
 
-subplot(1,2,1)
+subplot(1,2,1); hold on;
 plot(MaxAbs(4,n_min:end), MaxAbs(1,n_min:end), 'r--o');
 title('Max Abs. Cross-section (COMSOL) according to h');
 xlabel ('Height, nm');
 ylabel ('Max Abs C-S, a.u.');
 
 % Dependence: Wavelenght, corresponding to max Absorption Cross-Section (Comsol) according to Height
-subplot(1,2,2)
+subplot(1,2,2); hold on;
 plot(MaxAbs(4,n_min:end), MaxAbs(3,n_min:end).*norm_length, 'r--o'); 
 title('the Wavelength corresponding to the Max Abs. Cross-section (COMSOL)');
 xlabel ('Height, nm');
@@ -533,14 +533,14 @@ set(fig8, 'Units', 'normalized', 'OuterPosition', [0.01 0.045 0.98 0.95]);
 
 % Dependence: max of Scattering component by Total Electric Dipole according to Height
 
-subplot(1,2,1)
+subplot(1,2,1); hold on;
 plot(MaxScatD(4,n_min:end), MaxScatD(1,n_min:end), 'r--o');
 title('Max TED according to h');
 xlabel ('Height, nm');
 ylabel ('Max scat TED, a.u.');
 
 % Dependence: Wavelenght, corresponding to max of scattering component by Total Electric Dipole according to Height
-subplot(1,2,2)
+subplot(1,2,2); hold on;
 plot(MaxScatD(4,n_min:end), MaxScatD(3,n_min:end).*norm_length, 'r--o'); 
 title('the Wavelength corresponding to the Max TED');
 xlabel ('Height, nm');
@@ -552,14 +552,14 @@ fig9 = figure(9);
 set(fig9, 'Units', 'normalized', 'OuterPosition', [0.01 0.045 0.98 0.95]);
 
 % Dependence: max of Scattering component by Magnetic Dipole according to Height
-subplot(1,2,1)
+subplot(1,2,1); hold on;
 plot(Maxm(4,n_min:end), Maxm(1,n_min:end), 'r--o');
 title('Max magnetic dipole according to h');
 xlabel ('Height, nm');
 ylabel ('Max scat m, a.u.');
 
 % Dependence: Wavelenght, corresponding to max Magnetic Dipole according to Height
-subplot(1,2,2)
+subplot(1,2,2); hold on;
 plot(Maxm(4,n_min:end), Maxm(3,n_min:end).*norm_length, 'r--o'); 
 title('the Wavelength coresponding to the Max m');
 xlabel ('Height, nm');
@@ -572,14 +572,14 @@ fig10 = figure(10);
 set(fig10, 'Units', 'normalized', 'OuterPosition', [0.01 0.045 0.98 0.95]);
 
 % Dependence: max of Scattering component by Electric Quadrupole according to Height
-subplot(1,2,1)
+subplot(1,2,1); hold on;
 plot(MaxQ(4,n_min:end), MaxQ(1,n_min:end), 'r--o');
 title('Max Electric Quadrupole according to h');
 xlabel ('Height, nm');
 ylabel ('Max scat Q, a.u.');
 
 % Dependence: Wavelenght, corresponding to max Electric Quadrupole according to Height
-subplot(1,2,2)
+subplot(1,2,2); hold on;
 plot(MaxQ(4,n_min:end), MaxQ(3,n_min:end).*norm_length, 'r--o'); 
 title('the Wavelength coresponding to the Max Q');
 xlabel ('Height, nm');
@@ -592,14 +592,14 @@ fig11 = figure(11);
 set(fig11, 'Units', 'normalized', 'OuterPosition', [0.01 0.045 0.98 0.95]);
 
 % Dependence: max of Scattering component by Magnetic Quadrupole according to Height
-subplot(1,2,1)
+subplot(1,2,1); hold on;
 plot(MaxM(4,n_min:end), MaxM(1,n_min:end), 'r--o');
 title('Max magnetic Quadrupole according to h');
 xlabel ('Height, nm');
 ylabel ('Max scat M, a.u.');
 
 % Dependence: Wavelenght, corresponding to max Magnetic Quadrupole to Height
-subplot(1,2,2)
+subplot(1,2,2); hold on;
 plot(MaxM(4,n_min:end), MaxM(3,n_min:end).*norm_length, 'r--o'); 
 title('the Wavelength coresponding to the Max M');
 xlabel ('Height, nm');
@@ -607,23 +607,33 @@ ylabel ('Wavelength, nm');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-MaxRel = MaxValue(abs(TxK+Px)./abs(Px), fre, H, n_max); 
+
+MaxTxkPx = MaxValue(abs(TxK+Px), fre, H, n_max);
+indexfre  = ones(1, n_max);
+for i = 1 : n_max
+    indexfre(1,i) = find(fre(1, :) == MaxTxkPx(2,i));
+end
+
+tempPx = ones(1, n_max);
+for i = 1 : n_max
+    tempPx(1,i) = Px(i, indexfre(1,i));
+end
 
 fig12 = figure(12);
 set(fig12, 'Units', 'normalized', 'OuterPosition', [0.01 0.045 0.98 0.95]);
 
-% Dependence: max of (TD+ED)/ED according to Height
-% «ависимость максимума отношени€ суммы тороидального и электрического дипольного моментов от высоты
-subplot(1,2,1)
-plot(MaxRel(4,n_min:end), MaxRel(1,n_min:end), 'r--o');
+% Dependence: (TD+ED)/ED in the point of maximum TD+ED according to Height
+% «ависимость отношени€ суммы тороидального и электрического дипольного моментов в точке максимума TD+ED от высоты
+subplot(1,2,1); hold on;
+plot(MaxTxkPx(4,n_min:end), MaxTxkPx(1,n_min:end) ./ abs(tempPx(n_min:end)), 'r--o');
 title('Max (TD+ED)/ED according to h');
 xlabel ('Height, nm');
 ylabel ('Max scat M, a.u.');
 
-% Dependence: Wavelenght, corresponding to max (TD+ED)/ED to Height
-% «ависимость длины волны, соответствующей максимуму отношени€ суммы тороидального и электрического дипольного моментов, от высоты
-subplot(1,2,2)
-plot(MaxRel(4,n_min:end), MaxRel(3,n_min:end).*norm_length, 'r--o'); 
+% Dependence: Wavelenght, corresponding to (TD+ED)/ED in the point of maximum TD+ED to Height
+% «ависимость длины волны, соответствующей отношению суммы тороидального и электрического дипольного моментов в точке максимума TD+ED, от высоты
+subplot(1,2,2); hold on;
+plot(MaxTxkPx(4,n_min:end), MaxTxkPx(3,n_min:end).*norm_length, 'r--o'); 
 title('the Wavelength coresponding to the Max (TD+ED)/ED');
 xlabel ('Height, nm');
 ylabel ('Wavelength, nm');
