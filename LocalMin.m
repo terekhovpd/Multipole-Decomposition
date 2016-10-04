@@ -1,6 +1,6 @@
 function [ MIN ] = LocalMin( Px, n_max )
 % Ищет локальные минимумы для каждого параметра (каждой высоты)
-% ver 1.0 
+% ver 2.0 
 
 MIN = cell(n_max,1);
 for j = 1:n_max
