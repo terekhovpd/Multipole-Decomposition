@@ -1,8 +1,9 @@
-function slider_toroidal( fig, pl, xlab, ylab, leg, tit, n, n_min, n_max, h )
-% 2.0
+function slider_toroidal( fig, pl, axis1, xlab, ylab, leg, tit, n, n_min, n_max, h )
+% 2.2
 % Слайдер для тороидальной декомпозиции
 % fig - дескриптор фигуры
 % pl - функция, которая строит график
+% axis - функция, задающая пределы по осям X и Y
 % xlab - функция, которая задаёт подпись к оси X
 % ylab - функция, которая задаёт подпись к оси Y
 % n - начальное значение слайдера
@@ -22,10 +23,11 @@ bgcolor = fig.Color;
 % Задаём расположение оси X в окне figure
 axes('Parent',fig,'position',[0.13 0.22  0.77 0.7]); % в относительных единицах
 pl(n);	 % график функции
-xlab();	 % ось X
-ylab();	 % ось Y
-leg();	 % легенда
-tit(n);	 % заголовок
+axis1(n);
+xlab();  % ось X
+ylab();  % ось Y
+leg();   % легенда
+tit(n);  % заголовок
 grid on;
 
 % Параметры слайдера
@@ -73,12 +75,13 @@ uicontrol('Parent',fig,'Style','text','Units','normalized', ...
 	    	source.Value = n;
 	    end
 	    pl(source.Value);
+      axis1(source.Value)
  	    xlab();
  	    ylab();
  	    leg();
-        tit(source.Value);
- %       txt1.String = h (1, source.Value)
-        txt1.String = source.Value;
+       tit(source.Value);
+%       txt1.String = h (1, source.Value)
+       txt1.String = source.Value;
         grid on;
     end
 
