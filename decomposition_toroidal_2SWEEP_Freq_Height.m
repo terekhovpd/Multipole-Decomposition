@@ -1,62 +1,77 @@
 % Multipole Decomposotion with toroidal moment separation.
-% ver 2.3
+% ver 2.4
 
 clc
 clear all;
 
-norm_length = 1e9;   % value to multiply for m->nm converting  % величина, на которую домножаем, чтобы перевести метры в нанометры
-% norm_length = 1e6; % value to multiply for m->um converting  % величина, на которую домножаем, чтобы перевести метры в микрометры
+norm_length = 1e9;  % value to multiply for m -> nm converting  
+                    % величина, на которую домножаем, чтобы перевести метры в нанометры
+% norm_length = 1e6;    % value to multiply for m -> um converting  
+%                       % величина, на которую домножаем, чтобы перевести метры в микрометры
 
-n_max = 10;	% set MANUALLY, number of parametric sweep steps, maximum graphic slider parameter  % задавать вручную, число шагов в parametric sweep, максимальное значение слайдера
-n_min = 4;	% minimum graphic slider parameter and first considered parameter                   % минимальное значение слайдера; случаи с меньшим номером параметра не будут выводиться
-n = 4;     	% The original (first after fig creating) graphic slider parameter                  % первоначальное значение слайдера
-
+n_min = 1;	% minimum graphic slider parameter and first considered parameter                   
+            % минимальное значение слайдера; случаи с меньшим номером параметра не будут выводиться
+n = 1;     	% The original (first after fig creating) graphic slider parameter                  
+            % первоначальное значение слайдера
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Independent Variables
+rad = 100e-9;   % base edge of pyramid/parallelepiped/etc or radius of sphere/cilinder/cone/etc, in METERS, MANUALLY, for Normalization! MUST BE CHECKED  
+                % сторона основания пирамиды В МЕТРАХ, ПРОВЕРЯТЬ если нормируем на эффективное сечение!
+geomCS = rad^2; % effective geometrical cross-section for normalization, if it has square shape 
+                % эффективное поперечное сечение рассеяния для нормировки на него
+% geomCS = pi*rad^2; % effective geometrical cross-section for normalization, if it has circle shape. 
+% geomCS = 1e-18; % for usual normalization by nm  
+%                 % нормировка на нм обычная!
+% geomCS = 1e-12; % for usual normalization by um  
+%                 % нормировка на мкм обычная!
+E0x = 1 ; 
+E0 = 1;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Constants
 mu0 = 1.25663706 * 10^(-6);	% Vacuum permeability (magnetic constant)     % магнитная постоянная 
 eps0 = 8.85 * 10^(-12);		% Vacuum permittivity (electric constant)     % электрическая постоянная
 c = 2.998e+8; 				% speed of light                              % скорость света
 % Z = 120*pi; 				% for phase diagrams, still legacy parameter  % для фазовых диаграмм
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Independent Variables
-
-E0x = 1 ; 
-E0 = 1;
-
-rad = 100e-9;	% base edge of pyramid/parallelepiped/etc or radius of sphere/cilinder/cone/etc, in METERS, MANUALLY, for Normalization! MUST BE CHECKED.  % сторона основания пирамиды В МЕТРАХ, ПРОВЕРЯТЬ если нормируем на эффективное сечение!
-geomCS = rad^2; % effective geometrical cross-section for normalization, if it has square shape.  % эффективное поперечное сечение рассеяния для нормировки на него
-%geomCS = pi*rad^2; % effective geometrical cross-section for normalization, if it has circle shape. 
-% geomCS = 1e-18; % for usual normalization by nm  % нормировка на нм обычная!
-% geomCS = 1e-12; % for usual normalization by um  % нормировка на мкм обычная!
-  
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-epsilon_tbl = dlmread ('Px.txt', '' ,5,0); 	% read data from file, delete 5 top strings (header in COMSOL export files) % считывет данные из файла, обрезает 5 верхних строк
-
+epsilon_tbl = dlmread ('Px.txt', '' ,5,0); 	% read data from file, delete 5 top strings (header in COMSOL export files) 
+                                            % считывет данные из файла, обрезает 5 верхних строк
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Frequency array creating
-FRE = unique( epsilon_tbl(:, 1)');	% read all elements from 1 column and leave only unique elements % считывает из 1 колонки все элементы и оставляем только уникальные                                                      
-length_fre = size(FRE,2);			% number of frequency steps, frequency vector length  % число шагов по частоте, длина вектора частот                                                                 
+FRE = epsilon_tbl(:, 1)';	% read all elements from 1 column   
+                            % считывает из 1 колонки все элементы
+i = 1;
+while FRE(i) == FRE(i+1)
+    i=i+1;
+end
+n_max = i;  % number of parametric sweep steps, maximum graphic slider parameter 
+            % число шагов в parametric sweep, максимальное значение слайдера
+FRE = unique(FRE);  % leave in vector FRE only unique elements
+                    % оставляет в векторе FRE только уникальные элементы
+length_fre = size(FRE,2);	% number of frequency steps, frequency vector length  
+                            % число шагов по частоте, длина вектора частот                                                                 
 fre = ones(n_max, length_fre);
 for i = 1:1:n_max
-	fre(i,:) = fre(i,:) .* FRE; 	% create the matrix, containing n_max column-vectors fre, from one column-vector fre (for matrix dimension match)   % делаем из вектор-стобца fre матрицу, состоящую из n_max вектор-стобцов fre
+	fre(i,:) = fre(i,:) .* FRE; 	% create the matrix, containing n_max column-vectors fre, from one column-vector fre (for matrix dimension match)   
+                                    % делаем из вектор-столбца fre матрицу, состоящую из n_max вектор-столбцов fre
 end
 clear FRE;
-lambda = c./fre;  					% wavelength as speed of light divided by frequency % длина волны - скорость света делить на частоту
+lambda = c./fre;  	% wavelength as speed of light divided by frequency 
+                    % длина волны - скорость света делить на частоту
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-epsd = 1;		 	% Permittivity of environment outside of the particle % диэлектричекая проницаемость среды снаружи частицы
+epsd = 1;	% Permittivity of environment outside of the particle 
+            % диэлектричекая проницаемость среды снаружи частицы
 k0 = - 2*pi*fre/c; 	% k-vector % волновой вектор
 				  	% minus here, cause at COMSOL there is minus at the imaginary exponent e^(-i k*x), describing incident radiation
 				  	% минус потому что в COMSOL задан минус в мнимой экспоненте e^(-i k*x), описывающей падающее излучение
 
-kd = k0 .* sqrt(epsd); % k-vector in the environment outside of the particle % волновой вектор в среде
+kd = k0 .* sqrt(epsd);  % k-vector in the environment outside of the particle 
+                        % волновой вектор в среде
 vd2 = c ./ sqrt(epsd); % speed of light in the environment outside of the particle, vd for scattering cross-section without dependence of minus in k0 
 					   % скорость света в среде, vd для сечения рассеяния без зависимости от минуса в k0
 
 % vd = c ./ sqrt(epsd);
-vd = 2.*pi.*fre./( k0 .* sqrt(epsd) ); 	% speed of light in the environment too, with this vd extinction calculations works well.
+vd = 2.*pi.*fre./( k0 .* sqrt(epsd) ); 	% speed of light in the environment too, with this vd extinction calculations works well
 										% тоже скорость света в среде. С этим vd хорошо считается экстинкция.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -75,7 +90,8 @@ end
 epsilon_tbl = dlmread ('Py.txt', '' ,5,0);
 Py = ones(n_max, length_fre);
 for i = 1:1:length_fre
-Py(:,i) = Py(:,i) .* epsilon_tbl(1+(i-1)*n_max : 1 : i*n_max, 4);	% read each n_max-th element from 4-th column, beginning from n-th element % считывает из 4 колонки начиная с n-ного элемента каждый n_max элемент
+Py(:,i) = Py(:,i) .* epsilon_tbl(1+(i-1)*n_max : 1 : i*n_max, 4);	% read each n_max-th element from 4-th column, beginning from n-th element 
+                                                                    % считывает из 4 колонки начиная с n-ного элемента каждый n_max элемент
 end
 
 epsilon_tbl = dlmread ('Pz.txt', '' ,5,0);
@@ -107,8 +123,10 @@ end
 epsilon_tbl=dlmread ('scat.txt', '' ,5,0);
 scat  = ones(n_max, length_fre);
 for i = 1:1:length_fre
-scat(:,i) = scat(:,i) .* epsilon_tbl(1+(i-1)*n_max : 1 : i*n_max, 4) ./ 1.3E-3;	% Scattering cross-section, Watts % сечение рассеяния в Ваттах
-end                   % cross-section normalization by Poynting vector of incident radiation  % нормировка сечения на вектор пойнтинга падающего излучения
+scat(:,i) = scat(:,i) .* epsilon_tbl(1+(i-1)*n_max : 1 : i*n_max, 4) ./ 1.3E-3;	% Scattering cross-section, Watts 
+                                                                                % сечение рассеяния в Ваттах
+end                 % cross-section normalization by Poynting vector of incident radiation  
+                    % нормировка сечения на вектор пойнтинга падающего излучения
 
 epsilon_tbl=dlmread ('mx.txt', '' ,5,0);
 mx  = ones(n_max, length_fre);
@@ -486,7 +504,7 @@ slider_toroidal( fig5, pl5, xlab5, ylab5, leg5, tit5, n, n_min, n_max, H );
 % 4th line - value of parameter, corresponding to maximum value   % 4 строка - значение параметра которому соответствует максимальное значение
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%{
 
 Maxscat = MaxValue(scat./geomCS, fre, H, n_max); 
 
@@ -644,3 +662,4 @@ xlabel ('Height, nm');
 ylabel ('Wavelength, nm');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%}
