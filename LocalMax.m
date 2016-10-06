@@ -1,6 +1,6 @@
 function [ MAX ] = LocalMax( Px, n_max )
 % Ищет локальные максимумы для каждого параметра (каждой высоты)
-% ver 2.0 
+% ver 2.2 
 
 MAX = cell(n_max,1);
 for j = 1:n_max
@@ -11,5 +11,13 @@ for j = 1:n_max
 		end
 	end
 end
+
+for i = 1:n_max
+	if isempty(MAX{i})
+		[M,I] = max( Px(i,:) );
+		MAX{i} = [I, M];
+	end
+end
+
 
 end
