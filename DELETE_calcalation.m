@@ -1,5 +1,5 @@
 % Удаляет расчёт
-% ver 3.0
+% ver 4.0
 
 n = 3 % Номер расчёта, который надо удалить
 
@@ -50,6 +50,14 @@ Lambday = dlmread ('Lambday.dat');
 Lambdaz = dlmread ('Lambdaz.dat');
 absCS   = dlmread ('absCS.dat');
 scat    = dlmread ('scat.dat');
+ForScat = dlmread ('ForScat.dat');
+BackScat = dlmread ('BackScat.dat');
+ForScatPoint = dlmread ('ForScatPoint.dat');
+BackScatPoint = dlmread ('BackScatPoint.dat');
+ForScatPow = dlmread ('ForScatPow.dat');
+BackScatPow = dlmread ('BackScatPow.dat');
+ForScatPointPow = dlmread ('ForScatPointPow.dat');
+BackScatPointPow = dlmread ('BackScatPointPow.dat');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Удаляем ненужную строку
@@ -98,7 +106,14 @@ Lambday (n,:) = [];
 Lambdaz (n,:) = []; 
 scat (n,:) = []; 	
 absCS (n,:) = []; 	
-
+ForScat (n,:) = [];
+BackScat (n,:) = [];
+ForScatPoint (n,:) = [];
+BackScatPoint (n,:) = [];
+ForScatPow (n,:) = [];
+BackScatPow (n,:) = [];
+ForScatPointPow (n,:) = [];
+BackScatPointPow  (n,:) = [];
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Записываем файлы
@@ -147,3 +162,11 @@ dlmwrite ('Lambday.dat', Lambday, 'delimiter', '\t');
 dlmwrite ('Lambdaz.dat', Lambdaz, 'delimiter', '\t');
 dlmwrite ('absCS.dat', absCS, 'delimiter', '\t');
 dlmwrite ('scat.dat', scat, 'delimiter', '\t');
+dlmwrite ('ForScat.dat', ForScat, 'delimiter', '\t');
+dlmwrite ('BackScat.dat', BackScat, 'delimiter', '\t');
+dlmwrite ('ForScatPoint.dat', ForScatPoint, 'delimiter', '\t');
+dlmwrite ('BackScatPoint.dat', BackScatPoint, 'delimiter', '\t');
+dlmwrite ('ForScatPow.dat', ForScatPow, 'delimiter', '\t');
+dlmwrite ('BackScatPow.dat', BackScatPow, 'delimiter', '\t');
+dlmwrite ('ForScatPointPow.dat', ForScatPointPow, 'delimiter', '\t');
+dlmwrite ('BackScatPointPow.dat', BackScatPointPow, 'delimiter', '\t');
