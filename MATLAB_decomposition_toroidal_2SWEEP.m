@@ -86,10 +86,6 @@ ForScat          = dlmread ('ForScat.dat');
 BackScat         = dlmread ('BackScat.dat');
 ForScatPoint     = dlmread ('ForScatPoint.dat');
 BackScatPoint    = dlmread ('BackScatPoint.dat');
-ForScatPow       = dlmread ('ForScatPow.dat');
-BackScatPow      = dlmread ('BackScatPow.dat');
-ForScatPointPow  = dlmread ('ForScatPointPow.dat');
-BackScatPointPow = dlmread ('BackScatPointPow.dat');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 n_max = size(Px, 1);
 epsd = 1;   % Permittivity of environment outside of the particle 

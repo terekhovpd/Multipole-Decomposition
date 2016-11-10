@@ -324,34 +324,6 @@ BackScatPoint(:,i) = BackScatPoint(:,i) .* epsilon_tbl(1+(i-1)*n_max : 1 : i*n_m
 end
 BackScatPoint = BackScatPoint ./ 1.3E-3;
 
-epsilon_tbl = dlmread ('ForScatPow.txt', '' ,5,0); % Forward Scattering Power (integrated by half space)
-ForScatPow  = ones(n_max, length_fre);
-for i = 1:1:length_fre
-ForScatPow(:,i) = ForScatPow(:,i) .* epsilon_tbl(1+(i-1)*n_max : 1 : i*n_max, 4);
-end
-%ForScatPow = ForScatPow ./ 1.3E-3;
-
-epsilon_tbl = dlmread ('BackScatPow.txt', '' ,5,0); % Backward Scattering Power (integrated by half space)
-BackScatPow  = ones(n_max, length_fre);
-for i = 1:1:length_fre
-BackScatPow(:,i) = BackScatPow(:,i) .* epsilon_tbl(1+(i-1)*n_max : 1 : i*n_max, 4);
-end
-%BackScatPow = BackScatPow ./ 1.3E-3;
-
-epsilon_tbl = dlmread ('ForScatPointPow.txt', '' ,5,0); % Forward Scattering Power (point)
-ForScatPointPow  = ones(n_max, length_fre);
-for i = 1:1:length_fre
-ForScatPointPow(:,i) = ForScatPointPow(:,i) .* epsilon_tbl(1+(i-1)*n_max : 1 : i*n_max, 4);
-end
-%ForScatPointPow = ForScatPointPow./ 1.3E-3;
-
-epsilon_tbl = dlmread ('BackScatPointPow.txt', '' ,5,0); % Backward Scattering Power (point)
-BackScatPointPow  = ones(n_max, length_fre);
-for i = 1:1:length_fre
-BackScatPointPow(:,i) = BackScatPointPow(:,i) .* epsilon_tbl(1+(i-1)*n_max : 1 : i*n_max, 4);
-end
-%BackScatPointPow = BackScatPointPow ./ 1.3E-3;
-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -405,10 +377,6 @@ if n == 0
         dlmwrite ('BackScat.dat', BackScat, 'delimiter', '\t');
         dlmwrite ('ForScatPoint.dat', ForScatPoint, 'delimiter', '\t');
         dlmwrite ('BackScatPoint.dat', BackScatPoint, 'delimiter', '\t');
-        dlmwrite ('ForScatPow.dat', ForScatPow, 'delimiter', '\t');
-        dlmwrite ('BackScatPow.dat', BackScatPow, 'delimiter', '\t');
-        dlmwrite ('ForScatPointPow.dat', ForScatPointPow, 'delimiter', '\t');
-        dlmwrite ('BackScatPointPow.dat', BackScatPointPow, 'delimiter', '\t');
 else
         dlmwrite (strcat('fre', num2str(n), '.dat'), fre, 'delimiter', '\t');
         dlmwrite (strcat('H', num2str(n), '.dat'), H, 'delimiter', '\t');
@@ -456,9 +424,5 @@ else
         dlmwrite (strcat('ForScat', num2str(n), '.dat'), ForScat, 'delimiter', '\t');
         dlmwrite (strcat('BackScat', num2str(n), '.dat'), BackScat, 'delimiter', '\t');
         dlmwrite (strcat('ForScatPoint', num2str(n), '.dat'), ForScatPoint, 'delimiter', '\t');
-        dlmwrite (strcat('BackScatPoint', num2str(n), '.dat'), BackScatPoint, 'delimiter', '\t');
-        dlmwrite (strcat('ForScatPow', num2str(n), '.dat'), ForScatPow, 'delimiter', '\t');
-        dlmwrite (strcat('BackScatPow', num2str(n), '.dat'), BackScatPow, 'delimiter', '\t');
-        dlmwrite (strcat('ForScatPointPow', num2str(n), '.dat'), ForScatPointPow, 'delimiter', '\t');
-        dlmwrite (strcat('BackScatPointPow', num2str(n), '.dat'), BackScatPointPow, 'delimiter', '\t');        
+        dlmwrite (strcat('BackScatPoint', num2str(n), '.dat'), BackScatPoint, 'delimiter', '\t');        
 end

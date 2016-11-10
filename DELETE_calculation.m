@@ -54,10 +54,6 @@ ForScat = dlmread ('ForScat.dat');
 BackScat = dlmread ('BackScat.dat');
 ForScatPoint = dlmread ('ForScatPoint.dat');
 BackScatPoint = dlmread ('BackScatPoint.dat');
-ForScatPow = dlmread ('ForScatPow.dat');
-BackScatPow = dlmread ('BackScatPow.dat');
-ForScatPointPow = dlmread ('ForScatPointPow.dat');
-BackScatPointPow = dlmread ('BackScatPointPow.dat');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Удаляем ненужную строку
@@ -110,10 +106,6 @@ ForScat (n,:) = [];
 BackScat (n,:) = [];
 ForScatPoint (n,:) = [];
 BackScatPoint (n,:) = [];
-ForScatPow (n,:) = [];
-BackScatPow (n,:) = [];
-ForScatPointPow (n,:) = [];
-BackScatPointPow  (n,:) = [];
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Записываем файлы
@@ -166,7 +158,3 @@ dlmwrite ('ForScat.dat', ForScat, 'delimiter', '\t');
 dlmwrite ('BackScat.dat', BackScat, 'delimiter', '\t');
 dlmwrite ('ForScatPoint.dat', ForScatPoint, 'delimiter', '\t');
 dlmwrite ('BackScatPoint.dat', BackScatPoint, 'delimiter', '\t');
-dlmwrite ('ForScatPow.dat', ForScatPow, 'delimiter', '\t');
-dlmwrite ('BackScatPow.dat', BackScatPow, 'delimiter', '\t');
-dlmwrite ('ForScatPointPow.dat', ForScatPointPow, 'delimiter', '\t');
-dlmwrite ('BackScatPointPow.dat', BackScatPointPow, 'delimiter', '\t');

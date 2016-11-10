@@ -49,14 +49,10 @@ Lambday           = dlmread (strcat('Lambday', num2str(n), '.dat'));
 Lambdaz           = dlmread (strcat('Lambdaz', num2str(n), '.dat'));
 absCS             = dlmread (strcat('absCS', num2str(n), '.dat'));
 scat              = dlmread (strcat('scat', num2str(n), '.dat'));
-ForScat           = dlmread ('ForScat.dat');
+ForScat           = dlmread (strcat('ForScat', num2str(n), '.dat');
 BackScat          = dlmread (strcat('BackScat', num2str(n), '.dat'));
 ForScatPoint      = dlmread (strcat('ForScatPoint', num2str(n), '.dat'));
 BackScatPoint     = dlmread (strcat('BackScatPoint', num2str(n), '.dat'));
-ForScatPow        = dlmread (strcat('ForScatPow', num2str(n), '.dat'));
-BackScatPow       = dlmread (strcat('BackScatPow', num2str(n), '.dat'));
-ForScatPointPow   = dlmread (strcat('ForScatPointPow', num2str(n), '.dat'));
-BackScatPointPow  = dlmread (strcat('BackScatPointPow', num2str(n), '.dat'));
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 dlmwrite ('fre.dat', fre, 'delimiter', '\t');
@@ -103,6 +99,10 @@ dlmwrite ('Lambday.dat', Lambday, 'delimiter', '\t');
 dlmwrite ('Lambdaz.dat', Lambdaz, 'delimiter', '\t');
 dlmwrite ('absCS.dat', absCS, 'delimiter', '\t');
 dlmwrite ('scat.dat', scat, 'delimiter', '\t');
+dlmwrite ('ForScat.dat', ForScat, 'delimiter', '\t');
+dlmwrite ('BackScat.dat', BackScat, 'delimiter', '\t');
+dlmwrite ('ForScatPoint.dat', ForScatPoint, 'delimiter', '\t');
+dlmwrite ('BackScatPoint.dat', BackScatPoint, 'delimiter', '\t');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 delete (strcat('fre', num2str(n), '.dat'));
@@ -149,10 +149,7 @@ delete (strcat('Lambday', num2str(n), '.dat'));
 delete (strcat('Lambdaz', num2str(n), '.dat'));
 delete (strcat('absCS', num2str(n), '.dat'));
 delete (strcat('scat', num2str(n), '.dat'));
+delete (strcat('ForScat', num2str(n), '.dat'));
 delete (strcat('BackScat', num2str(n), '.dat'));
 delete (strcat('ForScatPoint', num2str(n), '.dat'));
 delete (strcat('BackScatPoint', num2str(n), '.dat'));
-delete (strcat('ForScatPow', num2str(n), '.dat'));
-delete (strcat('BackScatPow', num2str(n), '.dat'));
-delete (strcat('ForScatPointPow', num2str(n), '.dat'));
-delete (strcat('BackScatPointPow', num2str(n), '.dat'));

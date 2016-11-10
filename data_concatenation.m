@@ -253,26 +253,6 @@ BackScatPoint = cell(n,1);
 		BackScatPoint{i} = dlmread (strcat('BackScatPoint', num2str(i), '.dat'));
 	end		
 
-ForScatPow = cell(n,1);
-	for i =1:n
-		ForScatPow{i} = dlmread (strcat('ForScatPow', num2str(i), '.dat'));
-	end	
-
-BackScatPow = cell(n,1);
-	for i =1:n
-		BackScatPow{i} = dlmread (strcat('BackScatPow', num2str(i), '.dat'));
-	end		
-
-ForScatPointPow = cell(n,1);
-	for i =1:n
-		ForScatPointPow{i} = dlmread (strcat('ForScatPointPow', num2str(i), '.dat'));
-	end	
-
-BackScatPointPow = cell(n,1);
-	for i =1:n
-		BackScatPointPow{i} = dlmread (strcat('BackScatPointPow', num2str(i), '.dat'));
-	end		
-
 clear i;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -383,10 +363,6 @@ ForScat = Mask( ForScat,fre,mask );
 BackScat = Mask( BackScat,fre,mask );
 ForScatPoint = Mask( ForScatPoint,fre,mask );
 BackScatPoint = Mask( BackScatPoint,fre,mask );
-ForScatPow = Mask( ForScatPow,fre,mask );
-BackScatPow = Mask( BackScatPow,fre,mask );
-ForScatPointPow = Mask( ForScatPointPow,fre,mask );
-BackScatPointPow = Mask( BackScatPointPow,fre,mask );
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ƒелаем вектор высот
 H = [ H{1}(:,1); H{2}(:,1) ];
@@ -439,10 +415,6 @@ ForScat = ForScat (I,:);
 BackScat = BackScat (I,:);
 ForScatPoint = ForScatPoint (I,:);
 BackScatPoint = BackScatPoint (I,:);
-ForScatPow = ForScatPow (I,:);
-BackScatPow = BackScatPow (I,:);
-ForScatPointPow = ForScatPointPow (I,:);
-BackScatPointPow = BackScatPointPow (I,:);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ”дал€ем повтор€ющиес€ строки
@@ -558,7 +530,3 @@ dlmwrite ('ForScat.dat', ForScat, 'delimiter', '\t');
 dlmwrite ('BackScat.dat', BackScat, 'delimiter', '\t');
 dlmwrite ('ForScatPoint.dat', ForScatPoint, 'delimiter', '\t');
 dlmwrite ('BackScatPoint.dat', BackScatPoint, 'delimiter', '\t');
-dlmwrite ('ForScatPow.dat', ForScatPow, 'delimiter', '\t');
-dlmwrite ('BackScatPow.dat', BackScatPow, 'delimiter', '\t');
-dlmwrite ('ForScatPointPow.dat', ForScatPointPow, 'delimiter', '\t');
-dlmwrite ('BackScatPointPow.dat', BackScatPointPow, 'delimiter', '\t');
