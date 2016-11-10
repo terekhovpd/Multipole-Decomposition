@@ -1,5 +1,5 @@
 % Multipole Decomposotion with toroidal moment separation.
-% ver 4.01
+% ver 4.02
 
 clc
 clear all;
@@ -450,7 +450,7 @@ ylabel ('Wavelength, nm','FontSize', FontSize);
 
 fig15 = figure (15);
 
-pl15 = @(n) plot (lambda_nm(n,:), ForScat(n,:).*1e16, ...                 
+pl15 = @(n) plot (lambda_nm(n,:), ForScat(n,:).*1e14, ...                 
                  lambda_nm(n,:), ForScat(n,:)./BackScat(n,:), ...               
                  'LineWidth', LineWidth);
              %lambda_nm(n,:), BackScat(n,:).*1e16, ...    
@@ -459,25 +459,9 @@ axis15 = @(n) axis([-inf, Inf, -inf, Inf]);
 tit15 = @(n) title(strcat('Scattering (Patterns), h = ', num2str(H(n,1)), ' nm' ),'FontSize', FontSize);
 xlab15 = @() xlabel ('Wavelenght, nm','FontSize', FontSize);
 ylab15 = @() ylabel ('Far-field Scattering, a.u.', 'FontSize', FontSize);
-leg15 = @() legend({'Forward Scattering', 'Forward/Backward Scattering', 'For/Back', 'Back/For'},'FontSize', FontSizeLeg);
+leg15 = @() legend({'Forward Scattering', 'Forward/Backward Scattering'},'FontSize', FontSizeLeg);
 slider_toroidal( fig15, pl15, axis15, xlab15, ylab15, leg15, tit15, n, n_min, n_max, H );
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-fig16 = figure (16); 
-
-pl16 = @(n) plot (lambda_nm(n,:), ForScatPoint(n,:).*1e5, ...                 
-                 lambda_nm(n,:), ForScatPoint(n,:)./BackScatPoint(n,:), ...               
-                 'LineWidth', LineWidth);
-             %lambda_nm(n,:), BackScat(n,:).*1e16, ...    
-             %lambda_nm(n,:), BackScat(n,:)./ForScat(n,:), ...
-axis16 = @(n) axis([-inf, Inf, -inf, Inf]);
-tit16 = @(n) title(strcat('Scattering (Patterns) (Point), h = ', num2str(H(n,1)), ' nm' ),'FontSize', FontSize);
-xlab16 = @() xlabel ('Wavelenght, nm','FontSize', FontSize);
-ylab16 = @() ylabel ('Far-field Scattering, a.u.', 'FontSize', FontSize);
-leg16 = @() legend({'Forward Scattering', 'Forward/Backward Scattering'},'FontSize', FontSizeLeg);
-slider_toroidal( fig16, pl16, axis16, xlab16, ylab16, leg16, tit16, n, n_min, n_max, H );
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
