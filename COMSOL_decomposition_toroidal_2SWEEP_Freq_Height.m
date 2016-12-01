@@ -1,5 +1,5 @@
 % Multipole Decomposotion with toroidal moment separation.
-% ver 3.0
+% ver 4.03
 
 clc
 clear all;
@@ -342,6 +342,36 @@ for i = 1:1:length_fre
 absCS(:,i) = absCS(:,i) .* epsilon_tbl(1+(i-1)*n_max : 1 : i*n_max, 4);
 end
 absCS = absCS ./ 1.3E-3;    % absorption normalization by Poynting vector of incident radiation   % нормировка поглощения на вектор пойнтинга падающего излучения
+
+epsilon_tbl = dlmread ('ForScat.txt', '' ,5,0); % Forward Scattering (integrated by half space)
+ForScat  = ones(n_max, length_fre);
+for i = 1:1:length_fre
+ForScat(:,i) = ForScat(:,i) .* epsilon_tbl(1+(i-1)*n_max : 1 : i*n_max, 4);
+end
+ForScat = ForScat ./ 1.3E-3;
+
+epsilon_tbl = dlmread ('BackScat.txt', '' ,5,0); % Backward Scattering (integrated by half space)
+BackScat  = ones(n_max, length_fre);
+for i = 1:1:length_fre
+BackScat(:,i) = BackScat(:,i) .* epsilon_tbl(1+(i-1)*n_max : 1 : i*n_max, 4);
+end
+BackScat = BackScat ./ 1.3E-3;
+
+epsilon_tbl = dlmread ('ForScatPoint.txt', '' ,5,0); % Forward Scattering (point)
+ForScatPoint  = ones(n_max, length_fre);
+for i = 1:1:length_fre
+ForScatPoint(:,i) = ForScatPoint(:,i) .* epsilon_tbl(1+(i-1)*n_max : 1 : i*n_max, 4);
+end
+ForScatPoint = ForScatPoint ./ 1.3E-3;
+
+epsilon_tbl = dlmread ('BackScatPoint.txt', '' ,5,0); % Backward Scattering (point)
+BackScatPoint  = ones(n_max, length_fre);
+for i = 1:1:length_fre
+BackScatPoint(:,i) = BackScatPoint(:,i) .* epsilon_tbl(1+(i-1)*n_max : 1 : i*n_max, 4);
+end
+BackScatPoint = BackScatPoint ./ 1.3E-3;
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Extinction components for the wave, directed along Z and polarized along X
@@ -687,4 +717,83 @@ xlabel ('Height, nm','FontSize', FontSize);
 ylabel ('Wavelength, nm','FontSize', FontSize);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+fig15 = figure (15);
+
+pl15 = @(n) plot (lambda_nm(n,:), ForScat(n,:)./geomCS, ...                 
+                 lambda_nm(n,:), ForScat(n,:)./BackScat(n,:), ...               
+                 'LineWidth', LineWidth);
+             %lambda_nm(n,:), BackScat(n,:).*1e16, ...    
+             %lambda_nm(n,:), BackScat(n,:)./ForScat(n,:), ...
+axis15 = @(n) axis([-inf, Inf, -inf, Inf]);
+tit15 = @(n) title(strcat('Scattering (Patterns), h = ', num2str(H(n,1)), ' nm' ),'FontSize', FontSize);
+xlab15 = @() xlabel ('Wavelenght, nm','FontSize', FontSize);
+ylab15 = @() ylabel ('Far-field Scattering, a.u.', 'FontSize', FontSize);
+leg15 = @() legend({'Forward Scattering', 'Forward/Backward Scattering'},'FontSize', FontSizeLeg);
+slider_toroidal( fig15, pl15, axis15, xlab15, ylab15, leg15, tit15, n, n_min, n_max, H );
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+fig17 = figure (17); %phases
+
+pl17 = @(n) plot (lambda_nm(n,:), angle(Dx(n,:))./pi, ...
+				lambda_nm(n,:), angle(my(n,:))./pi, ...
+                lambda_nm(n,:), angle(Dx(n,:))./pi+angle(my(n,:))./pi, ...
+                'LineWidth', LineWidth);
+            
+%             	lambda_nm(n,:), angle(Tx(n,:))./geomCS, ...
+% 				lambda_nm(n,:), angle(my(n,:))./geomCS, ...
+% 				lambda_nm(n,:), angle(my(n,:))./geomCS, ...
+% 				lambda_nm(n,:), angle(my(n,:))./geomCS, ...
+axis17 = @(n) axis([-inf, Inf, -inf, inf]);
+tit17 = @(n) title(strcat('Phases of moments, h = ', num2str(H(n,1)), ' nm' ),'FontSize', FontSize);
+xlab17 = @() xlabel ('Wavelenght, nm','FontSize', FontSize);
+ylab17 = @() ylabel ('Phase, pi','FontSize', FontSize);
+leg17 = @() legend({'angle(Dx)', 'angle(my)','Sum'},'FontSize', FontSizeLeg);
+slider_toroidal( fig17, pl17, axis17, xlab17, ylab17, leg17, tit17, n, n_min, n_max, H );
+
+%{
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%}
+
+%{
+
+MaxTxk = MaxValue(abs(TxK)./geomCS, fre, H, n_max); % вывод нужных значений в файлы % writing values at files
+
+scat_TED_to_H(:,1)=MaxScatD(4,n_min:n_lim);
+scat_TED_to_H(:,2)=MaxScatD(1,n_min:n_lim);
+scat_TED_to_H(:,3)=MaxScatD(3,n_min:n_lim);
+dlmwrite('scat_TED_to_H_PP_100.csv', [scat_TED_to_H], 'delimiter', ',');
+
+scat_m_to_H(:,1)=Maxm(4,n_min:n_lim);
+scat_m_to_H(:,2)=Maxm(1,n_min:n_lim);
+scat_m_to_H(:,3)=Maxm(3,n_min:n_lim);
+dlmwrite('scat_m_to_H_PP_100.csv', [scat_m_to_H], 'delimiter', ',');
+
+scat_TDEDRel_to_H(:,1)=MaxTxkPx(4,n_min:n_lim) ./ abs(tempPx(n_min:n_lim));
+scat_TDEDRel_to_H(:,2)=MaxTxkPx(1,n_min:n_lim);
+scat_TDEDRel_to_H(:,3)=MaxTxkPx(3,n_min:n_lim).*norm_length;
+dlmwrite('scat_TDEDRel_to_H_PP_100.csv', [scat_TDEDRel_to_H], 'delimiter', ',');
+
+
+scat_MQ_to_H(:,1)=MaxM(4,n_min:n_lim);
+scat_MQ_to_H(:,2)=MaxM(1,n_min:n_lim);
+scat_MQ_to_H(:,3)=MaxM(3,n_min:n_lim).*norm_length;
+dlmwrite('scat_MQ_to_H_PP_100.csv', [scat_MQ_to_H], 'delimiter', ',');
+
+scat_Q_to_H(:,1)=MaxQ(4,n_min:n_lim);
+scat_Q_to_H(:,2)=MaxQ(1,n_min:n_lim);
+scat_Q_to_H(:,3)=MaxQ(3,n_min:n_lim).*norm_length;
+dlmwrite('scat_Q_to_H_PP_100.csv', [scat_Q_to_H], 'delimiter', ',');
+
+scat_Tx_to_H(:,1)=MaxTxk(4,n_min:n_lim);
+scat_Tx_to_H(:,2)=MaxTxk(1,n_min:n_lim);
+scat_Tx_to_H(:,3)=MaxTxk(3,n_min:n_lim);
+dlmwrite('scat_Tx_to_H_PP_100.csv', [scat_Tx_to_H], 'delimiter', ',');
+
+
 %}

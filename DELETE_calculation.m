@@ -1,5 +1,5 @@
 % Удаляет расчёт
-% ver 3.0
+% ver 4.01
 
 n = 3 % Номер расчёта, который надо удалить
 
@@ -50,6 +50,10 @@ Lambday = dlmread ('Lambday.dat');
 Lambdaz = dlmread ('Lambdaz.dat');
 absCS   = dlmread ('absCS.dat');
 scat    = dlmread ('scat.dat');
+ForScat = dlmread ('ForScat.dat');
+BackScat = dlmread ('BackScat.dat');
+ForScatPoint = dlmread ('ForScatPoint.dat');
+BackScatPoint = dlmread ('BackScatPoint.dat');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Удаляем ненужную строку
@@ -98,7 +102,10 @@ Lambday (n,:) = [];
 Lambdaz (n,:) = []; 
 scat (n,:) = []; 	
 absCS (n,:) = []; 	
-
+ForScat (n,:) = [];
+BackScat (n,:) = [];
+ForScatPoint (n,:) = [];
+BackScatPoint (n,:) = [];
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Записываем файлы
@@ -147,3 +154,7 @@ dlmwrite ('Lambday.dat', Lambday, 'delimiter', '\t');
 dlmwrite ('Lambdaz.dat', Lambdaz, 'delimiter', '\t');
 dlmwrite ('absCS.dat', absCS, 'delimiter', '\t');
 dlmwrite ('scat.dat', scat, 'delimiter', '\t');
+dlmwrite ('ForScat.dat', ForScat, 'delimiter', '\t');
+dlmwrite ('BackScat.dat', BackScat, 'delimiter', '\t');
+dlmwrite ('ForScatPoint.dat', ForScatPoint, 'delimiter', '\t');
+dlmwrite ('BackScatPoint.dat', BackScatPoint, 'delimiter', '\t');

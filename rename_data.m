@@ -1,55 +1,58 @@
-% Убирает цыфру в названии файлы. Например 'Px1.dat' в 'Px.dat'
-% ver 3.0
+% Убирает цифру в названии файлов. Например 'Px1.dat' в 'Px.dat'
+% ver 4.01
 
 n = 1
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-fre     = dlmread (strcat('fre', num2str(n), '.dat'));
-H       = dlmread (strcat('H', num2str(n), '.dat'));
-Px      = dlmread (strcat('Px', num2str(n), '.dat'));
-Py      = dlmread (strcat('Py', num2str(n), '.dat'));
-Pz      = dlmread (strcat('Pz', num2str(n), '.dat'));
-Tx      = dlmread (strcat('Tx', num2str(n), '.dat'));
-Ty      = dlmread (strcat('Ty', num2str(n), '.dat'));
-Tz      = dlmread (strcat('Tz', num2str(n), '.dat'));
-mx      = dlmread (strcat('mx', num2str(n), '.dat'));
-my      = dlmread (strcat('my', num2str(n), '.dat'));
-mz      = dlmread (strcat('mz', num2str(n), '.dat'));
-Mxx     = dlmread (strcat('Mxx', num2str(n), '.dat'));
-Mxy     = dlmread (strcat('Mxy', num2str(n), '.dat'));
-Mxz     = dlmread (strcat('Mxz', num2str(n), '.dat'));
-Myx     = dlmread (strcat('Myx', num2str(n), '.dat'));
-Myy     = dlmread (strcat('Myy', num2str(n), '.dat'));
-Myz     = dlmread (strcat('Myz', num2str(n), '.dat'));
-Mzx     = dlmread (strcat('Mzx', num2str(n), '.dat'));
-Mzy     = dlmread (strcat('Mzy', num2str(n), '.dat'));
-Mzz     = dlmread (strcat('Mzz', num2str(n), '.dat'));
-Qxx     = dlmread (strcat('Qxx', num2str(n), '.dat'));
-Qyy     = dlmread (strcat('Qyy', num2str(n), '.dat'));
-Qzz     = dlmread (strcat('Qzz', num2str(n), '.dat'));
-Qxy     = dlmread (strcat('Qxy', num2str(n), '.dat'));
-Qxz     = dlmread (strcat('Qxz', num2str(n), '.dat'));
-Qyx     = dlmread (strcat('Qyx', num2str(n), '.dat'));
-Qyz     = dlmread (strcat('Qyz', num2str(n), '.dat'));
-Qzx     = dlmread (strcat('Qzx', num2str(n), '.dat'));
-Qzy     = dlmread (strcat('Qzy', num2str(n), '.dat'));
-Oxxx    = dlmread (strcat('Oxxx', num2str(n), '.dat'));
-Oxxy    = dlmread (strcat('Oxxy', num2str(n), '.dat'));
-Oxxz    = dlmread (strcat('Oxxz', num2str(n), '.dat'));
-Oyyx    = dlmread (strcat('Oyyx', num2str(n), '.dat'));
-Oyyy    = dlmread (strcat('Oyyy', num2str(n), '.dat'));
-Oyyz    = dlmread (strcat('Oyyz', num2str(n), '.dat'));
-Ozzx    = dlmread (strcat('Ozzx', num2str(n), '.dat'));
-Ozzy    = dlmread (strcat('Ozzy', num2str(n), '.dat'));
-Ozzz    = dlmread (strcat('Ozzz', num2str(n), '.dat'));
-Oxyz    = dlmread (strcat('Oxyz', num2str(n), '.dat'));
-Lambdax = dlmread (strcat('Lambdax', num2str(n), '.dat'));
-Lambday = dlmread (strcat('Lambday', num2str(n), '.dat'));
-Lambdaz = dlmread (strcat('Lambdaz', num2str(n), '.dat'));
-absCS   = dlmread (strcat('absCS', num2str(n), '.dat'));
-scat    = dlmread (strcat('scat', num2str(n), '.dat'));
-
+fre               = dlmread (strcat('fre', num2str(n), '.dat'));
+H                 = dlmread (strcat('H', num2str(n), '.dat'));
+Px                = dlmread (strcat('Px', num2str(n), '.dat'));
+Py                = dlmread (strcat('Py', num2str(n), '.dat'));
+Pz                = dlmread (strcat('Pz', num2str(n), '.dat'));
+Tx                = dlmread (strcat('Tx', num2str(n), '.dat'));
+Ty                = dlmread (strcat('Ty', num2str(n), '.dat'));
+Tz                = dlmread (strcat('Tz', num2str(n), '.dat'));
+mx                = dlmread (strcat('mx', num2str(n), '.dat'));
+my                = dlmread (strcat('my', num2str(n), '.dat'));
+mz                = dlmread (strcat('mz', num2str(n), '.dat'));
+Mxx               = dlmread (strcat('Mxx', num2str(n), '.dat'));
+Mxy               = dlmread (strcat('Mxy', num2str(n), '.dat'));
+Mxz               = dlmread (strcat('Mxz', num2str(n), '.dat'));
+Myx               = dlmread (strcat('Myx', num2str(n), '.dat'));
+Myy               = dlmread (strcat('Myy', num2str(n), '.dat'));
+Myz               = dlmread (strcat('Myz', num2str(n), '.dat'));
+Mzx               = dlmread (strcat('Mzx', num2str(n), '.dat'));
+Mzy               = dlmread (strcat('Mzy', num2str(n), '.dat'));
+Mzz               = dlmread (strcat('Mzz', num2str(n), '.dat'));
+Qxx               = dlmread (strcat('Qxx', num2str(n), '.dat'));
+Qyy               = dlmread (strcat('Qyy', num2str(n), '.dat'));
+Qzz               = dlmread (strcat('Qzz', num2str(n), '.dat'));
+Qxy               = dlmread (strcat('Qxy', num2str(n), '.dat'));
+Qxz               = dlmread (strcat('Qxz', num2str(n), '.dat'));
+Qyx               = dlmread (strcat('Qyx', num2str(n), '.dat'));
+Qyz               = dlmread (strcat('Qyz', num2str(n), '.dat'));
+Qzx               = dlmread (strcat('Qzx', num2str(n), '.dat'));
+Qzy               = dlmread (strcat('Qzy', num2str(n), '.dat'));
+Oxxx              = dlmread (strcat('Oxxx', num2str(n), '.dat'));
+Oxxy              = dlmread (strcat('Oxxy', num2str(n), '.dat'));
+Oxxz              = dlmread (strcat('Oxxz', num2str(n), '.dat'));
+Oyyx              = dlmread (strcat('Oyyx', num2str(n), '.dat'));
+Oyyy              = dlmread (strcat('Oyyy', num2str(n), '.dat'));
+Oyyz              = dlmread (strcat('Oyyz', num2str(n), '.dat'));
+Ozzx              = dlmread (strcat('Ozzx', num2str(n), '.dat'));
+Ozzy              = dlmread (strcat('Ozzy', num2str(n), '.dat'));
+Ozzz              = dlmread (strcat('Ozzz', num2str(n), '.dat'));
+Oxyz              = dlmread (strcat('Oxyz', num2str(n), '.dat'));
+Lambdax           = dlmread (strcat('Lambdax', num2str(n), '.dat'));
+Lambday           = dlmread (strcat('Lambday', num2str(n), '.dat'));
+Lambdaz           = dlmread (strcat('Lambdaz', num2str(n), '.dat'));
+absCS             = dlmread (strcat('absCS', num2str(n), '.dat'));
+scat              = dlmread (strcat('scat', num2str(n), '.dat'));
+ForScat           = dlmread (strcat('ForScat', num2str(n), '.dat');
+BackScat          = dlmread (strcat('BackScat', num2str(n), '.dat'));
+ForScatPoint      = dlmread (strcat('ForScatPoint', num2str(n), '.dat'));
+BackScatPoint     = dlmread (strcat('BackScatPoint', num2str(n), '.dat'));
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 dlmwrite ('fre.dat', fre, 'delimiter', '\t');
@@ -96,6 +99,10 @@ dlmwrite ('Lambday.dat', Lambday, 'delimiter', '\t');
 dlmwrite ('Lambdaz.dat', Lambdaz, 'delimiter', '\t');
 dlmwrite ('absCS.dat', absCS, 'delimiter', '\t');
 dlmwrite ('scat.dat', scat, 'delimiter', '\t');
+dlmwrite ('ForScat.dat', ForScat, 'delimiter', '\t');
+dlmwrite ('BackScat.dat', BackScat, 'delimiter', '\t');
+dlmwrite ('ForScatPoint.dat', ForScatPoint, 'delimiter', '\t');
+dlmwrite ('BackScatPoint.dat', BackScatPoint, 'delimiter', '\t');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 delete (strcat('fre', num2str(n), '.dat'));
@@ -142,3 +149,7 @@ delete (strcat('Lambday', num2str(n), '.dat'));
 delete (strcat('Lambdaz', num2str(n), '.dat'));
 delete (strcat('absCS', num2str(n), '.dat'));
 delete (strcat('scat', num2str(n), '.dat'));
+delete (strcat('ForScat', num2str(n), '.dat'));
+delete (strcat('BackScat', num2str(n), '.dat'));
+delete (strcat('ForScatPoint', num2str(n), '.dat'));
+delete (strcat('BackScatPoint', num2str(n), '.dat'));

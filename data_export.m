@@ -1,5 +1,5 @@
 % 
-% ver 3.0
+% ver 4.01
 
 clc
 clear all;
@@ -295,6 +295,37 @@ absCS(:,i) = absCS(:,i) .* epsilon_tbl(1+(i-1)*n_max : 1 : i*n_max, 4);
 end
 absCS = absCS ./ 1.3E-3;    % absorption normalization by Poynting vector of incident radiation   % нормировка поглощения на вектор пойнтинга падающего излучения
 
+
+epsilon_tbl = dlmread ('ForScat.txt', '' ,5,0); % Forward Scattering (integrated by half space)
+ForScat  = ones(n_max, length_fre);
+for i = 1:1:length_fre
+ForScat(:,i) = ForScat(:,i) .* epsilon_tbl(1+(i-1)*n_max : 1 : i*n_max, 4);
+end
+ForScat = ForScat ./ 1.3E-3;
+
+epsilon_tbl = dlmread ('BackScat.txt', '' ,5,0); % Backward Scattering (integrated by half space)
+BackScat  = ones(n_max, length_fre);
+for i = 1:1:length_fre
+BackScat(:,i) = BackScat(:,i) .* epsilon_tbl(1+(i-1)*n_max : 1 : i*n_max, 4);
+end
+BackScat = BackScat ./ 1.3E-3;
+
+epsilon_tbl = dlmread ('ForScatPoint.txt', '' ,5,0); % Forward Scattering (point)
+ForScatPoint  = ones(n_max, length_fre);
+for i = 1:1:length_fre
+ForScatPoint(:,i) = ForScatPoint(:,i) .* epsilon_tbl(1+(i-1)*n_max : 1 : i*n_max, 4);
+end
+ForScatPoint = ForScatPoint ./ 1.3E-3;
+
+epsilon_tbl = dlmread ('BackScatPoint.txt', '' ,5,0); % Backward Scattering (point)
+BackScatPoint  = ones(n_max, length_fre);
+for i = 1:1:length_fre
+BackScatPoint(:,i) = BackScatPoint(:,i) .* epsilon_tbl(1+(i-1)*n_max : 1 : i*n_max, 4);
+end
+BackScatPoint = BackScatPoint ./ 1.3E-3;
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 if n == 0
@@ -342,6 +373,10 @@ if n == 0
         dlmwrite ('Lambdaz.dat', Lambdaz, 'delimiter', '\t');
         dlmwrite ('absCS.dat', absCS, 'delimiter', '\t');
         dlmwrite ('scat.dat', scat, 'delimiter', '\t');
+        dlmwrite ('ForScat.dat', ForScat, 'delimiter', '\t');
+        dlmwrite ('BackScat.dat', BackScat, 'delimiter', '\t');
+        dlmwrite ('ForScatPoint.dat', ForScatPoint, 'delimiter', '\t');
+        dlmwrite ('BackScatPoint.dat', BackScatPoint, 'delimiter', '\t');
 else
         dlmwrite (strcat('fre', num2str(n), '.dat'), fre, 'delimiter', '\t');
         dlmwrite (strcat('H', num2str(n), '.dat'), H, 'delimiter', '\t');
@@ -386,5 +421,8 @@ else
         dlmwrite (strcat('Lambday', num2str(n), '.dat'), Lambday, 'delimiter', '\t');
         dlmwrite (strcat('Lambdaz', num2str(n), '.dat'), Lambdaz, 'delimiter', '\t');
         dlmwrite (strcat('absCS', num2str(n), '.dat'), absCS, 'delimiter', '\t');
-        dlmwrite (strcat('scat', num2str(n), '.dat'), scat, 'delimiter', '\t');
+        dlmwrite (strcat('ForScat', num2str(n), '.dat'), ForScat, 'delimiter', '\t');
+        dlmwrite (strcat('BackScat', num2str(n), '.dat'), BackScat, 'delimiter', '\t');
+        dlmwrite (strcat('ForScatPoint', num2str(n), '.dat'), ForScatPoint, 'delimiter', '\t');
+        dlmwrite (strcat('BackScatPoint', num2str(n), '.dat'), BackScatPoint, 'delimiter', '\t');        
 end
