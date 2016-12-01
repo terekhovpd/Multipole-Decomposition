@@ -1,5 +1,5 @@
 % Multipole Decomposotion with toroidal moment separation.
-% ver 4.02
+% ver 4.03
 
 clc
 clear all;
@@ -450,7 +450,7 @@ ylabel ('Wavelength, nm','FontSize', FontSize);
 
 fig15 = figure (15);
 
-pl15 = @(n) plot (lambda_nm(n,:), ForScat(n,:).*1e14, ...                 
+pl15 = @(n) plot (lambda_nm(n,:), ForScat(n,:)./geomCS, ...                 
                  lambda_nm(n,:), ForScat(n,:)./BackScat(n,:), ...               
                  'LineWidth', LineWidth);
              %lambda_nm(n,:), BackScat(n,:).*1e16, ...    
