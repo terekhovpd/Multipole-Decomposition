@@ -1,5 +1,5 @@
 % 
-% ver 4.01
+% ver 4.02
 
 clc
 clear all;
@@ -421,6 +421,7 @@ else
         dlmwrite (strcat('Lambday', num2str(n), '.dat'), Lambday, 'delimiter', '\t');
         dlmwrite (strcat('Lambdaz', num2str(n), '.dat'), Lambdaz, 'delimiter', '\t');
         dlmwrite (strcat('absCS', num2str(n), '.dat'), absCS, 'delimiter', '\t');
+        dlmwrite (strcat('scat', num2str(n), '.dat'), scat, 'delimiter', '\t');
         dlmwrite (strcat('ForScat', num2str(n), '.dat'), ForScat, 'delimiter', '\t');
         dlmwrite (strcat('BackScat', num2str(n), '.dat'), BackScat, 'delimiter', '\t');
         dlmwrite (strcat('ForScatPoint', num2str(n), '.dat'), ForScatPoint, 'delimiter', '\t');
