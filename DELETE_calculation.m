@@ -1,5 +1,5 @@
 % Удаляет расчёт
-% ver 4.5
+% ver 4.51
 
 %n = 3 % Номер расчёта, который надо удалить
 
@@ -171,8 +171,8 @@ switch button
 		dlmwrite ('ForScatPoint.dat', ForScatPoint, 'delimiter', '\t');
 		dlmwrite ('BackScatPoint.dat', BackScatPoint, 'delimiter', '\t');
 
-		buttonYes = questdlg(strcat('Calculation №', num2str(n),' have been deleted'),'Success!','Ok','Ok')
+		buttonYes = questdlg(strcat('Calculation №', num2str(n),' has been deleted'),'Success!','Ok','Ok')
 
 	case 'No'
-		buttonNo = questdlg('Operation have been canceled','Cancel','Ok','Ok')
+		buttonNo = questdlg('Operation has been canceled','Cancel','Ok','Ok')
 end
