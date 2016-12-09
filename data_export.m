@@ -1,20 +1,62 @@
 % 
-% ver 4.02
+% ver 4.5
 
 clc
 clear all;
 
-n = 1;     	             
+
+
+        prompt = {'Enter index you want to assign to .dat files. If 0, it will be Px.dat, etc. If 1, 2, 3 etc it will be Px1.dat, etc.:'};
+        dlg_title = 'Calculation to delete';
+        num_lines = 1;
+        defaultans = {'0'};
+        n = inputdlg(prompt,dlg_title,num_lines,defaultans);
+        n = str2num(n{1}(1));
+
+
+
+            button = questdlg('What H (height) dimension have COMSOL exported to .txt files?','Dimension check','m','nm','Other', 'm')
+            switch button
+                 case 'm'
+                 norm_length = 1;  % value to multiply for m converting  
+                    % величина, на которую домножаем, чтобы перевести размерности
+
+                
+                 case 'nm'
+                 norm_length = 1e-9;  % value to multiply for m converting  
+                    % величина, на которую домножаем, чтобы перевести размерности   
+
+                 case 'Other'
+                        buttonOther = questdlg('What H (height) dimension have COMSOL exported to .txt files?','Dimension check','mm','um','Other', 'm')
+                            switch buttonOther
+
+                                    case 'mm'
+                                    norm_length = 1e-3;  % value to multiply for m converting  
+                                       % величина, на которую домножаем, чтобы перевести размерности
+
+                                    case 'um'
+                                    norm_length = 1e-6;  % value to multiply for m converting  
+                                       % величина, на которую домножаем, чтобы перевести размерности
+
+                                     case 'Other'
+
+                                     buttonError = questdlg('Please contact the techical support >_>','Success!','Ok','Ok');
+                                     error('Please contact the techical support >_>');
+   
+
+                            end
+            end              
+   	             
             
 epsilon_tbl = dlmread ('Px.txt', '' ,5,0); 	% read data from file, delete 5 top strings (header in COMSOL export files) 
-                                            % считывет данные из файла, обрезает 5 верхних строк
+                                            % считывает данные из файла, обрезает 5 верхних строк
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Frequency array creating
 FRE = epsilon_tbl(:, 1)';	% read all elements from 1 column   
                             % считывает из 1 колонки все элементы
 i = 1;
 while FRE(i) == FRE(i+1)
-    i=i+1;
+    i = i + 1;
 end
 n_max = i;  % number of parametric sweep steps, maximum graphic slider parameter 
             % число шагов в parametric sweep, максимальное значение слайдера
@@ -34,7 +76,7 @@ clear FRE;
 % Высота в метрах
 H = ones(n_max, length_fre);
 for i = 1:1:length_fre
-H(:,i) = H(:,i) .* epsilon_tbl(1+(i-1)*n_max : 1 : i*n_max, 2);
+H(:,i) = H(:,i) .* epsilon_tbl(1+(i-1)*n_max : 1 : i*n_max, 2) .* norm_length;
 end
 
 
@@ -377,6 +419,8 @@ if n == 0
         dlmwrite ('BackScat.dat', BackScat, 'delimiter', '\t');
         dlmwrite ('ForScatPoint.dat', ForScatPoint, 'delimiter', '\t');
         dlmwrite ('BackScatPoint.dat', BackScatPoint, 'delimiter', '\t');
+         buttonYes = questdlg('data has been exported to *.dat files (Px.dat etc)','Success!','Ok','Ok');
+
 else
         dlmwrite (strcat('fre', num2str(n), '.dat'), fre, 'delimiter', '\t');
         dlmwrite (strcat('H', num2str(n), '.dat'), H, 'delimiter', '\t');
@@ -426,4 +470,8 @@ else
         dlmwrite (strcat('BackScat', num2str(n), '.dat'), BackScat, 'delimiter', '\t');
         dlmwrite (strcat('ForScatPoint', num2str(n), '.dat'), ForScatPoint, 'delimiter', '\t');
         dlmwrite (strcat('BackScatPoint', num2str(n), '.dat'), BackScatPoint, 'delimiter', '\t');        
+
+
+
+         buttonYes = questdlg(strcat('data has been exported to *', num2str(n),'.dat files (Px', num2str(n),  '.dat etc)'),'Success!','Ok','Ok');
 end
