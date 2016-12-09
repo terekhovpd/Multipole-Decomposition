@@ -1,5 +1,5 @@
 % Убирает цифру в названии файлов. Например 'Px1.dat' в 'Px.dat'
-% ver 4.01
+% ver 4.02
 
 n = 1
 
@@ -49,7 +49,7 @@ Lambday           = dlmread (strcat('Lambday', num2str(n), '.dat'));
 Lambdaz           = dlmread (strcat('Lambdaz', num2str(n), '.dat'));
 absCS             = dlmread (strcat('absCS', num2str(n), '.dat'));
 scat              = dlmread (strcat('scat', num2str(n), '.dat'));
-ForScat           = dlmread (strcat('ForScat', num2str(n), '.dat');
+ForScat           = dlmread (strcat('ForScat', num2str(n), '.dat'));
 BackScat          = dlmread (strcat('BackScat', num2str(n), '.dat'));
 ForScatPoint      = dlmread (strcat('ForScatPoint', num2str(n), '.dat'));
 BackScatPoint     = dlmread (strcat('BackScatPoint', num2str(n), '.dat'));
