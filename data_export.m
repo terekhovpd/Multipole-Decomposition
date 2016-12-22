@@ -1,53 +1,24 @@
 % 
-% ver 4.5
+% ver 5.0 beta
 
 clc
 clear all;
 
 
 
-        prompt = {'Enter index you want to assign to .dat files. If 0, it will be Px.dat, etc. If 1, 2, 3 etc it will be Px1.dat, etc.:'};
-        dlg_title = 'Calculation to delete';
-        num_lines = 1;
-        defaultans = {'0'};
-        n = inputdlg(prompt,dlg_title,num_lines,defaultans);
-        n = str2num(n{1}(1));
+prompt = {'Enter index you want to assign to .dat files. If 0, it will be Px.dat, etc. If 1, 2, 3 etc it will be Px1.dat, etc.:'};
+dlg_title = 'Number to assign';
+num_lines = 1;
+defaultans = {'0'};
+n = inputdlg(prompt,dlg_title,num_lines,defaultans);
+n = str2num(n{1}(1));
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+norm_length = out_of_comsol();  	             
+dimension = in_to_matlab(); % Массив ячеек. Первая char, вторачя значение на которое надо умножить
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-
-            button = questdlg('What H (height) dimension have COMSOL exported to .txt files?','Dimension check','m','nm','Other', 'm')
-            switch button
-                 case 'm'
-                 norm_length = 1;  % value to multiply for m converting  
-                    % величина, на которую домножаем, чтобы перевести размерности
-
-                
-                 case 'nm'
-                 norm_length = 1e-9;  % value to multiply for m converting  
-                    % величина, на которую домножаем, чтобы перевести размерности   
-
-                 case 'Other'
-                        buttonOther = questdlg('What H (height) dimension have COMSOL exported to .txt files?','Dimension check','mm','um','Other', 'm')
-                            switch buttonOther
-
-                                    case 'mm'
-                                    norm_length = 1e-3;  % value to multiply for m converting  
-                                       % величина, на которую домножаем, чтобы перевести размерности
-
-                                    case 'um'
-                                    norm_length = 1e-6;  % value to multiply for m converting  
-                                       % величина, на которую домножаем, чтобы перевести размерности
-
-                                     case 'Other'
-
-                                     buttonError = questdlg('Please contact the techical support >_>','Success!','Ok','Ok');
-                                     error('Please contact the techical support >_>');
-   
-
-                            end
-            end              
-   	             
-            
 epsilon_tbl = dlmread ('Px.txt', '' ,5,0); 	% read data from file, delete 5 top strings (header in COMSOL export files) 
                                             % считывает данные из файла, обрезает 5 верхних строк
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -371,6 +342,8 @@ BackScatPoint = BackScatPoint ./ 1.3E-3;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 if n == 0
+        dlmwrite ('dim_value.dat', dimension{2}, 'delimiter', '\t');
+        dlmwrite ('dim_name.dat', dimension{1}, 'delimiter', '');
         dlmwrite ('fre.dat', fre, 'delimiter', '\t');
         dlmwrite ('H.dat', H, 'delimiter', '\t');
         dlmwrite ('Px.dat', Px, 'delimiter', '\t');
@@ -422,6 +395,8 @@ if n == 0
          buttonYes = questdlg('data has been exported to *.dat files (Px.dat etc)','Success!','Ok','Ok');
 
 else
+        dlmwrite (strcat('dim_value', num2str(n), '.dat'), dimension{2}, 'delimiter', '\t');
+        dlmwrite (strcat('dim_name', num2str(n), '.dat'), dimension{1}, 'delimiter', '');
         dlmwrite (strcat('fre', num2str(n), '.dat'), fre, 'delimiter', '\t');
         dlmwrite (strcat('H', num2str(n), '.dat'), H, 'delimiter', '\t');
         dlmwrite (strcat('Px', num2str(n), '.dat'), Px, 'delimiter', '\t');

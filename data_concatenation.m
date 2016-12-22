@@ -1,5 +1,5 @@
 % Data concatenation
-% ver 4.01
+% ver 4.1
 
 clc
 clear all;
@@ -10,6 +10,9 @@ fre = cell(n,1);
 	for i =1:n
 		fre{i} = dlmread (strcat('fre', num2str(i), '.dat'));
 	end
+
+norm_length       = dlmread  (strcat('dim_value',num2str(n),'.dat')); %ѕишем файлы с нанометрами и прочим бла бла бла
+dim_char          = fileread (strcat('dim_name',num2str(n),'.dat'));
 
 % Height, Meters
 % ¬ысота в метрах
@@ -365,9 +368,11 @@ ForScatPoint = Mask( ForScatPoint,fre,mask );
 BackScatPoint = Mask( BackScatPoint,fre,mask );
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ƒелаем вектор высот
+
+
 H = [ H{1}(:,1); H{2}(:,1) ];
-[H, I] = sort(H); % сортируем вектор высот
-% —ортеруем все остальные данные в соответствии сортировкой вектора высот
+[H, I] = sort(H); % —ортируем вектор высот
+%—ортируем все остальные данные в соответствии сортировкой вектора высот
 mask 	= mask(I,:);
 Px 		= Px (I,:);	
 Py 		= Py (I,:);	
@@ -483,6 +488,8 @@ H = repmat( H, 1, size(mask, 2) );
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 dlmwrite ('fre.dat', fre, 'delimiter', '\t');
+dlmwrite ('dim_value.dat', norm_length, 'delimiter', '\t');
+filewrite ('dim_name.dat', dim_char);
 dlmwrite ('H.dat', H, 'delimiter', '\t');
 dlmwrite ('Px.dat', Px, 'delimiter', '\t');
 dlmwrite ('Py.dat', Py, 'delimiter', '\t');

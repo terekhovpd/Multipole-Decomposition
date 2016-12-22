@@ -1,13 +1,8 @@
 % Multipole Decomposotion with toroidal moment separation.
-% ver 4.03
+% ver 4.02
 
 clc
 clear all;
-
-norm_length = 1e9;  % value to multiply for m -> nm converting  
-                    % величина, на которую домножаем, чтобы перевести метры в нанометры
-% norm_length = 1e6;    % value to multiply for m -> um converting  
-%                       % величина, на которую домножаем, чтобы перевести метры в микрометры
 
 n_min = 1;  % minimum graphic slider parameter and first considered parameter                   
             % минимальное значение слайдера; случаи с меньшим номером параметра не будут выводиться
@@ -19,16 +14,18 @@ FontSizeLeg = 9;       % font size at the legends % размер шрифта в легендах
 LineWidth = 2.3;        % Line Width at the graphics % толщина линии на графиках            
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Independent Variables
-rad = 100e-9;   % base edge of pyramid/parallelepiped/etc or radius of sphere/cilinder/cone/etc, in METERS, MANUALLY, for Normalization! MUST BE CHECKED  
+rad = 200e-9;   % base edge of pyramid/parallelepiped/etc or radius of sphere/cilinder/cone/etc, in METERS, MANUALLY, for Normalization! MUST BE CHECKED  
                 % сторона основания пирамиды В МЕТРАХ, ПРОВЕРЯТЬ если нормируем на эффективное сечение!
-geomCS = rad^2; % effective geometrical cross-section for normalization, if it has square shape 
+%geomCS = rad/2; % effective geometrical cross-section for normalization, if it has square shape 
                 % эффективное поперечное сечение рассеяния для нормировки на него
-%geomCS = pi*rad^2; % effective geometrical cross-section for normalization, if it has circle shape. 
-% geomCS = 1e-18; % for usual normalization by nm  
+%geomCS = pi*rad^2; %effective geometrical cross-section for normalization, if it has circle shape. 
+geomCS = 1e-18; % for usual normalization by nm  
 %                 % нормировка на нм обычная!
 % geomCS = 1e-12; % for usual normalization by um  
 %                 % нормировка на мкм обычная!
-E0x = 1 ; 
+
+%PS ЕСЛИ НАДО ДЕЛИТЬ НА КОНСТАНТУ РАССКОМЕНТИТЬ СТРОКИ В РАЙОНЕ 92-ой!
+E0x = 1; 
 E0 = 1;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Constants
@@ -38,6 +35,9 @@ c = 2.998e+8;               % speed of light                              % скор
 % Z = 120*pi;               % for phase diagrams, still legacy parameter  % для фазовых диаграмм
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+norm_length      = dlmread ('dim_value.dat');   % value to multiply for m -> nm converting  
+                                                % величина, на которую домножаем, чтобы перевести метры в нанометры
+dim_char         = fileread ('dim_name.dat');
 fre              = dlmread ('fre.dat');
 H                = dlmread ('H.dat');
 Px               = dlmread ('Px.dat');
@@ -86,11 +86,16 @@ ForScat          = dlmread ('ForScat.dat');
 BackScat         = dlmread ('BackScat.dat');
 ForScatPoint     = dlmread ('ForScatPoint.dat');
 BackScatPoint    = dlmread ('BackScatPoint.dat');
+
+%geom_CS = geomCS.*H;  % effective geometrical cross-section for normalization, if it has square shape 
+                      % эффективное поперечное сечение рассеяния для нормировки на него
+geom_CS = geomCS.*(H.*0+1);  % РАССКОМЕНТИТЬ, ЕСЛИ СЕЧЕНИЕ НОРМИРОВКИ НЕ ЗАВИСИТ ОТ высоты и надо нормировать на geomCS!!!!
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 n_max = size(Px, 1);
 epsd = 1;   % Permittivity of environment outside of the particle 
             % диэлектричекая проницаемость среды снаружи частицы
-lambda = c./fre;    % wavelength as speed of light divided by frequency 
+lambda = c./fre;    % Wavelength as speed of light divided by frequency 
                     % длина волны - скорость света делить на частоту
 k0 = - 2*pi*fre/c;  % k-vector % волновой вектор
                     % minus here, cause at COMSOL there is minus at the imaginary exponent e^(-i k*x), describing incident radiation
@@ -170,7 +175,7 @@ ScatO = ((k0.^8.*epsd.^2./(3780.*pi.*eps0.^2.*vd2.*mu0)).*(6.*abs(FullOxyz).^2+3
 ScatCS = (ScatD + Scatm + ScatQ + ScatM + ScatO) ; 
 
 
-lambda_nm = lambda .* norm_length;  % converting wavelenght from m to nm % переводим длину волны из метров в нанометры
+lambda_nm = lambda .* norm_length;  % converting Wavelength from m to nm % переводим длину волны из метров в нанометры
 H = H .* norm_length;               % converting height to nm % переводим высоту в нанометры
 
 
@@ -181,17 +186,17 @@ maxPxTx = LocalMax( abs(TxK + Px), n_max );
 
 fig1 = figure (1);
 
-pl1 = @(n) plot (lambda_nm(n,:), abs(Px(n,:))./geomCS, ...
-                 lambda_nm(n,:), abs(TxK(n,:) + Px(n,:))./geomCS, ...
-                 lambda_nm(n,:), abs(TxK(n,:))./geomCS, ...
-                 lambda_nm(n, maxPxTx{n}(:,1)), maxPxTx{n}(:,2)./geomCS, 'o', ...
-                 lambda_nm(n, minPxTx{n}(:,1)), minPxTx{n}(:,2)./geomCS, 'o', ...
+pl1 = @(n) plot (lambda_nm(n,:), abs(Px(n,:))./geom_CS(n,:), ...
+                 lambda_nm(n,:), abs(TxK(n,:) + Px(n,:))./geom_CS(n,:), ...
+                 lambda_nm(n,:), abs(TxK(n,:))./geom_CS(n,:), ...
+                 lambda_nm(n, maxPxTx{n}(:,1)), maxPxTx{n}(:,2)./geom_CS(n,1), 'o', ...
+                 lambda_nm(n, minPxTx{n}(:,1)), minPxTx{n}(:,2)./geom_CS(n,1), 'o', ...
                  'LineWidth', LineWidth);
-axis1 = @(n) axis([-inf, Inf, -inf, 1.05*(max(max([abs(Px)./geomCS, abs(TxK + Px)./geomCS, abs(TxK./geomCS)]))) ]);
-xlab1 = @() xlabel ('Wavelength, nm','FontSize', FontSize);
+axis1 = @(n) axis([-inf, Inf, -inf, 1.05*(max(max([abs(Px)./min(geom_CS(:,1)), abs(TxK + Px)./min(geom_CS(:,1)), abs(TxK./min(geom_CS(:,1)))]))) ]);
+xlab1 = @() xlabel (strcat('Wavelength,', 32, dim_char),'FontSize', FontSize);
 ylab1 = @() ylabel ('dipole, a.u.','FontSize', FontSize);
 leg1 =  @() legend( {'ED','ED+TD','TD'},'FontSize', FontSizeLeg);
-tit1 =  @(n) title(strcat('Height h = ', num2str(H(n,1)), ' nm'),'FontSize', FontSize);
+tit1 =  @(n) title (strcat('Height h = ',32, num2str(H(n,1)), 32, dim_char),'FontSize', FontSize);
 slider_toroidal( fig1, pl1, axis1, xlab1, ylab1, leg1, tit1, n, n_min, n_max, H);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -200,18 +205,18 @@ slider_toroidal( fig1, pl1, axis1, xlab1, ylab1, leg1, tit1, n, n_min, n_max, H)
 % Вклады мультиполей в экстинкцию
 fig2 = figure(2);
 
-pl2 = @(n) plot (lambda_nm(n,:), ExtPx(n,:)./geomCS, ...
-                lambda_nm(n,:), ExtTx(n,:)./geomCS, ...
-                lambda_nm(n,:), ExtQxz(n,:)./geomCS, ...
-                lambda_nm(n,:), Extmy(n,:)./geomCS, ...
-                lambda_nm(n,:), ExtMyz(n,:)./geomCS, ...
-                lambda_nm(n,:), ExtOxzz(n,:)./geomCS, ...
-                lambda_nm(n,:), ExtCS(n,:)./geomCS, ...
+pl2 = @(n) plot (lambda_nm(n,:), ExtPx(n,:)./geom_CS(n,:), ...
+                lambda_nm(n,:), ExtTx(n,:)./geom_CS(n,:), ...
+                lambda_nm(n,:), ExtQxz(n,:)./geom_CS(n,:), ...
+                lambda_nm(n,:), Extmy(n,:)./geom_CS(n,:), ...
+                lambda_nm(n,:), ExtMyz(n,:)./geom_CS(n,:), ...
+                lambda_nm(n,:), ExtOxzz(n,:)./geom_CS(n,:), ...
+                lambda_nm(n,:), ExtCS(n,:)./geom_CS(n,:), ...
                 'LineWidth', LineWidth);
-axis2 = @(n) axis([-inf, Inf, -inf, 1.05*(max(max([ExtPx./geomCS, ExtTx./geomCS, ExtQxz./geomCS, Extmy./geomCS, ExtMyz./geomCS, ExtOxzz./geomCS, ExtCS./geomCS]))) ]);
-tit2 = @(n) title(strcat('Multipoles contributions to Extincntion, h = ', num2str(H(n,1)), ' nm' ),'FontSize', FontSize);
-xlab2 = @() xlabel ('Wavelength ,nm','FontSize', FontSize);
-ylab2 = @() ylabel ('Multipoles contributions, um^2','FontSize', FontSize); % um - микрометры
+axis2 = @(n) axis([-inf, Inf, -inf, 1.05*(max(max([ExtPx./min(geom_CS(:,1)), ExtTx./min(geom_CS(:,1)), ExtQxz./min(geom_CS(:,1)), Extmy./min(geom_CS(:,1)), ExtMyz./min(geom_CS(:,1)), ExtOxzz./min(geom_CS(:,1)), ExtCS./min(geom_CS(:,1))]))) ]);
+tit2 = @(n) title (strcat('Multipoles contributions to Extincntion, h = ',32, num2str(H(n,1)), 32, dim_char),'FontSize', FontSize);
+xlab2 = @() xlabel (strcat('Wavelength,', 32, dim_char),'FontSize', FontSize);
+ylab2 = @() ylabel ('Multipoles contributions, nm^2','FontSize', FontSize); % um - микрометры
 leg2 = @() legend({'Px','Tx','Qxz','my','Myz','Oxzz','Total Ext-on Cross Sect. as Sum'},'FontSize', FontSizeLeg);
 slider_toroidal( fig2, pl2, axis2, xlab2, ylab2, leg2, tit2, n, n_min, n_max, H );
 
@@ -220,16 +225,16 @@ slider_toroidal( fig2, pl2, axis2, xlab2, ylab2, leg2, tit2, n, n_min, n_max, H 
 % All Cross-sections % Все сечения 
 fig3 = figure(3);
 
-pl3 = @(n) plot (lambda_nm(n,:), abs(ExtCS(n,:))./geomCS, ...
-                lambda_nm(n,:), scat(n,:)./geomCS, ...
-                lambda_nm(n,:), absCS(n,:)./geomCS, ...
-                lambda_nm(n,:), (scat(n,:)+absCS(n,:))./geomCS, ...
-                lambda_nm(n,:), ScatCS(n,:)./geomCS, ...
+pl3 = @(n) plot (lambda_nm(n,:), abs(ExtCS(n,:))./geom_CS(n,:), ...
+                lambda_nm(n,:), scat(n,:)./geom_CS(n,:), ...
+                lambda_nm(n,:), absCS(n,:)./geom_CS(n,:), ...
+                lambda_nm(n,:), (scat(n,:)+absCS(n,:))./geom_CS(n,:), ...
+                lambda_nm(n,:), ScatCS(n,:)./geom_CS(n,:), ...
                 'LineWidth', LineWidth);
-axis3 = @(n) axis([-inf, Inf, -inf, 1.05*(max(max([abs(ExtCS)./geomCS, scat./geomCS, absCS./geomCS, (scat+absCS)./geomCS, ScatCS./geomCS]))) ]);
-tit3 = @(n) title(strcat('Cross section, h = ', num2str(H(n,1)), ' nm' ),'FontSize', FontSize);
-xlab3 = @() xlabel ('Wavelength, nm','FontSize', FontSize);
-ylab3 = @() ylabel ('Cross section, mkm^2','FontSize', FontSize);
+axis3 = @(n) axis([-inf, Inf, -inf, 1.05*(max(max([abs(ExtCS)./min(geom_CS(:,1)), scat./min(geom_CS(:,1)), absCS./min(geom_CS(:,1)), (scat+absCS)./min(geom_CS(:,1)), ScatCS./min(geom_CS(:,1))]))) ]);
+tit3 = @(n) title (strcat('Cross section, h = ',32, num2str(H(n,1)), 32, dim_char),'FontSize', FontSize);
+xlab3 = @() xlabel (strcat('Wavelength,', 32, dim_char),'FontSize', FontSize);
+ylab3 = @() ylabel ('Cross section, nm^2','FontSize', FontSize);
 leg3 = @() legend({'Extincntion cross section','Scattering cross section from COMSOL','Absorption cross section from COMSOL', 'Extinction cross section from COMSOL (Abs+Scat)', 'Scatterning cross section'},'FontSize', FontSizeLeg );
 slider_toroidal( fig3, pl3, axis3, xlab3, ylab3, leg3, tit3, n, n_min, n_max, H );
 
@@ -238,13 +243,13 @@ slider_toroidal( fig3, pl3, axis3, xlab3, ylab3, leg3, tit3, n, n_min, n_max, H 
 % Scattering cross-sections only % Только рассеяния
 fig4 = figure (4);
 
-pl4 = @(n) plot (lambda_nm(n,:), ScatCS(n,:)./geomCS, ...
-                lambda_nm(n,:), scat(n,:)./geomCS, ...
+pl4 = @(n) plot (lambda_nm(n,:), ScatCS(n,:)./geom_CS(n,:), ...
+                lambda_nm(n,:), scat(n,:)./geom_CS(n,:), ...
                 'LineWidth', LineWidth);
-axis4 = @(n) axis([-inf, Inf, -inf, 1.05*(max(max([scat./geomCS, ScatCS./geomCS]))) ]);
-tit4 = @(n) title(strcat('Cross section, h = ', num2str(H(n,1)),' nm' ),'FontSize', FontSize);
-xlab4 = @() xlabel ('Wavelength, nm','FontSize', FontSize);
-ylab4 = @() ylabel ('Cross section, um^2','FontSize', FontSize);
+axis4 = @(n) axis([-inf, Inf, -inf, 1.05*(max(max([scat./min(geom_CS(:,1)), ScatCS./min(geom_CS(:,1))]))) ]);
+tit4 = @(n) title (strcat('Cross section, h = ',32, num2str(H(n,1)), 32, dim_char),'FontSize', FontSize);
+xlab4 = @() xlabel (strcat('Wavelength,', 32, dim_char),'FontSize', FontSize);
+ylab4 = @() ylabel ('Cross section, nm^2','FontSize', FontSize);
 leg4 = @() legend({'Scattering cross section', 'Scattering cross section from COMSOL'},'FontSize', FontSizeLeg);
 slider_toroidal( fig4, pl4, axis4, xlab4, ylab4, leg4, tit4, n, n_min, n_max, H );
 
@@ -252,17 +257,17 @@ slider_toroidal( fig4, pl4, axis4, xlab4, ylab4, leg4, tit4, n, n_min, n_max, H 
 
 fig5 = figure (5);
 
-pl5 = @(n) plot (lambda_nm(n,:), ScatD(n,:)./geomCS, ...
-                lambda_nm(n,:), Scatm(n,:)./geomCS, ...
-                lambda_nm(n,:), ScatQ(n,:)./geomCS, ...
-                lambda_nm(n,:), ScatM(n,:)./geomCS, ...
-                lambda_nm(n,:), ScatO(n,:)./geomCS, ...
-                lambda_nm(n,:), ScatCS(n,:)./geomCS, ...
+pl5 = @(n) plot (lambda_nm(n,:), ScatD(n,:)./geom_CS(n,:), ...
+                lambda_nm(n,:), Scatm(n,:)./geom_CS(n,:), ...
+                lambda_nm(n,:), ScatQ(n,:)./geom_CS(n,:), ...
+                lambda_nm(n,:), ScatM(n,:)./geom_CS(n,:), ...
+                lambda_nm(n,:), ScatO(n,:)./geom_CS(n,:), ...
+                lambda_nm(n,:), ScatCS(n,:)./geom_CS(n,:), ...
                 'LineWidth', LineWidth);
-axis5 = @(n) axis([-inf, Inf, -inf, 1.05*(max(max([ScatD./geomCS, Scatm./geomCS, ScatQ./geomCS, ScatM./geomCS, ScatO./geomCS, ScatCS./geomCS]))) ]);
-tit5 = @(n) title(strcat('Multipoles Contributions to Scattering, h = ', num2str(H(n,1)), ' nm' ),'FontSize', FontSize);
-xlab5 = @() xlabel ('Wavelenght, nm','FontSize', FontSize);
-ylab5 = @() ylabel ('Multipoles Contributions, um^2','FontSize', FontSize);
+axis5 = @(n) axis([-inf, Inf, -inf, 1.05*(max(max([ScatD./min(geom_CS(:,1)), Scatm./min(geom_CS(:,1)), ScatQ./min(geom_CS(:,1)), ScatM./min(geom_CS(:,1)), ScatO./min(geom_CS(:,1)), ScatCS./min(geom_CS(:,1))]))) ]);
+tit5 = @(n) title (strcat('Multipoles Contributions to Scattering, h = ',32, num2str(H(n,1)), 32, dim_char),'FontSize', FontSize);
+xlab5 = @() xlabel (strcat('Wavelength,', 32, dim_char),'FontSize', FontSize);
+ylab5 = @() ylabel ('Multipoles Contributions, nm^2','FontSize', FontSize);
 leg5 = @() legend({'scat D ', 'scat m', 'scat Q', 'scat M', 'scat O', 'Sum Scat'},'FontSize', FontSizeLeg);
 slider_toroidal( fig5, pl5, axis5, xlab5, ylab5, leg5, tit5, n, n_min, n_max, H );
 
@@ -271,13 +276,13 @@ slider_toroidal( fig5, pl5, axis5, xlab5, ylab5, leg5, tit5, n, n_min, n_max, H 
 % At the MaxValue 
 % 1st line - maximum value                                        % 1 строка - максимальное значение величины
 % 2nd line - frequency, corresponding to this value               % 2 строка - частота соответствующая этому значению
-% 3rd line - wavelenght, corresponding to this value              % 3 строка - длина волны соответствующая этому значению
+% 3rd line - Wavelength, corresponding to this value              % 3 строка - длина волны соответствующая этому значению
 % 4th line - value of parameter, corresponding to maximum value   % 4 строка - значение параметра которому соответствует максимальное значение
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 n_lim = n_max;  % can be changed if you need to cut off all results after n_lim
 
-Maxscat = MaxValue(scat./geomCS, fre, H, n_max); 
+Maxscat = MaxValue(scat./geom_CS(:,:), fre, H, n_max); 
 
 fig6 = figure(6);
 set(fig6, 'Units', 'normalized', 'OuterPosition', [0.01 0.045 0.98 0.95]);
@@ -287,21 +292,21 @@ set(fig6, 'Units', 'normalized', 'OuterPosition', [0.01 0.045 0.98 0.95]);
 subplot(1,2,1); hold on;
 plot(Maxscat(4,n_min:n_lim), Maxscat(1,n_min:n_lim), 'r--o', ...
                 'LineWidth', LineWidth); 
-title('Max Scat. C-S (COMSOL) according to h','FontSize', FontSize);
-xlabel ('Height, nm','FontSize', FontSize);
+title ('Max Scat. C-S (COMSOL) according to h','FontSize', FontSize);
+xlabel (strcat('Wavelength,', 32, dim_char),'FontSize', FontSize);
 ylabel ('Max Scat. Cross-section, a.u.','FontSize', FontSize);
 
-% Dependence: Wavelenght, corresponding to max Scattering Cross-Section (Comsol) according to Height
+% Dependence: Wavelength, corresponding to max Scattering Cross-Section (Comsol) according to Height
 subplot(1,2,2); hold on;
 plot(Maxscat(4,n_min:n_lim), Maxscat(3,n_min:n_lim).*norm_length, 'r--o', ...
                 'LineWidth', LineWidth);  
 title('the Wavelength corresponding to the Max Scat. C-S (COMSOL)','FontSize', FontSize);
-xlabel ('Height, nm','FontSize', FontSize);
+xlabel (strcat('Wavelength,', 32, dim_char),'FontSize', FontSize);
 ylabel ('Res Wavelength, nm','FontSize', FontSize);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-MaxAbs = MaxValue(absCS./geomCS, fre, H, n_max); 
+MaxAbs = MaxValue(absCS./geom_CS(:,:), fre, H, n_max); 
 
 fig7 = figure(7);
 set(fig7, 'Units', 'normalized', 'OuterPosition', [0.01 0.045 0.98 0.95]);
@@ -312,19 +317,19 @@ subplot(1,2,1); hold on;
 plot(MaxAbs(4,n_min:n_lim), MaxAbs(1,n_min:n_lim), 'r--o', ...
                 'LineWidth', LineWidth); 
 title('Max Abs. C-S (COMSOL) according to h','FontSize', FontSize);
-xlabel ('Height, nm','FontSize', FontSize);
+xlabel (strcat('Wavelength,', 32, dim_char),'FontSize', FontSize);
 ylabel ('Max Abs. Cross-section, a.u.','FontSize', FontSize);
 
-% Dependence: Wavelenght, corresponding to max Absorption Cross-Section (Comsol) according to Height
+% Dependence: Wavelength, corresponding to max Absorption Cross-Section (Comsol) according to Height
 subplot(1,2,2); hold on;
 plot(MaxAbs(4,n_min:n_lim), MaxAbs(3,n_min:n_lim).*norm_length, 'r--o', ...
                 'LineWidth', LineWidth);  
 title('the Wavelength corresponding to the Max Abs. C-S (COMSOL)','FontSize', FontSize);
-xlabel ('Height, nm','FontSize', FontSize);
+xlabel (strcat('Wavelength,', 32, dim_char),'FontSize', FontSize);
 ylabel ('Res Wavelength, nm','FontSize', FontSize);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-MaxScatD = MaxValue(ScatD./geomCS, fre, H, n_max); 
+MaxScatD = MaxValue(ScatD./geom_CS(:,:), fre, H, n_max); 
 
 fig8 = figure(8);
 set(fig8, 'Units', 'normalized', 'OuterPosition', [0.01 0.045 0.98 0.95]);
@@ -335,18 +340,18 @@ subplot(1,2,1); hold on;
 plot(MaxScatD(4,n_min:n_lim), MaxScatD(1,n_min:n_lim), 'r--o', ...
                 'LineWidth', LineWidth); 
 title('Max TED according to h','FontSize', FontSize);
-xlabel ('Height, nm','FontSize', FontSize);
+xlabel (strcat('Wavelength,', 32, dim_char),'FontSize', FontSize);
 ylabel ('Max TED, a.u.','FontSize', FontSize);
 
-% Dependence: Wavelenght, corresponding to max of scattering component by Total Electric Dipole according to Height
+% Dependence: Wavelength, corresponding to max of scattering component by Total Electric Dipole according to Height
 subplot(1,2,2); hold on;
 plot(MaxScatD(4,n_min:n_lim), MaxScatD(3,n_min:n_lim).*norm_length, 'r--o', ...
                 'LineWidth', LineWidth);  
 title('the Wavelength corresponding to the Max TED','FontSize', FontSize);
-xlabel ('Height, nm','FontSize', FontSize);
+xlabel (strcat('Wavelength,', 32, dim_char),'FontSize', FontSize);
 ylabel ('Res Wavelength, nm','FontSize', FontSize);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Maxm = MaxValue(Scatm./geomCS, fre, H, n_max); 
+Maxm = MaxValue(Scatm./geom_CS(:,:), fre, H, n_max); 
 
 fig9 = figure(9);
 set(fig9, 'Units', 'normalized', 'OuterPosition', [0.01 0.045 0.98 0.95]);
@@ -356,19 +361,19 @@ subplot(1,2,1); hold on;
 plot(Maxm(4,n_min:n_lim), Maxm(1,n_min:n_lim), 'r--o', ...
                 'LineWidth', LineWidth); 
 title('Max magnetic dipole according to h','FontSize', FontSize);
-xlabel ('Height, nm','FontSize', FontSize);
+xlabel (strcat('Wavelength,', 32, dim_char),'FontSize', FontSize);
 ylabel ('Max magnetic dipole, a.u.','FontSize', FontSize);
 
-% Dependence: Wavelenght, corresponding to max Magnetic Dipole according to Height
+% Dependence: Wavelength, corresponding to max Magnetic Dipole according to Height
 subplot(1,2,2); hold on;
 plot(Maxm(4,n_min:n_lim), Maxm(3,n_min:n_lim).*norm_length, 'r--o', ...
                 'LineWidth', LineWidth);  
 title('the Wavelength coresponding to the max magnetic dipole','FontSize', FontSize);
-xlabel ('Height, nm','FontSize', FontSize);
+xlabel (strcat('Wavelength,', 32, dim_char),'FontSize', FontSize);
 ylabel ('Wavelength, nm','FontSize', FontSize);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-MaxQ = MaxValue(ScatQ./geomCS, fre, H, n_max); 
+MaxQ = MaxValue(ScatQ./geom_CS(:,:), fre, H, n_max); 
 
 fig10 = figure(10);
 set(fig10, 'Units', 'normalized', 'OuterPosition', [0.01 0.045 0.98 0.95]);
@@ -378,19 +383,19 @@ subplot(1,2,1); hold on;
 plot(MaxQ(4,n_min:n_lim), MaxQ(1,n_min:n_lim), 'r--o', ...
                 'LineWidth', LineWidth); 
 title('Max Electric Quadrupole according to h','FontSize', FontSize);
-xlabel ('Height, nm','FontSize', FontSize);
+xlabel (strcat('Wavelength,', 32, dim_char),'FontSize', FontSize);
 ylabel ('Max Electric Quadrupole, a.u.','FontSize', FontSize);
 
-% Dependence: Wavelenght, corresponding to max Electric Quadrupole according to Height
+% Dependence: Wavelength, corresponding to max Electric Quadrupole according to Height
 subplot(1,2,2); hold on;
 plot(MaxQ(4,n_min:n_lim), MaxQ(3,n_min:n_lim).*norm_length, 'r--o', ...
                 'LineWidth', LineWidth);  
 title('the Wavelength coresponding to the Max Q','FontSize', FontSize);
-xlabel ('Height, nm','FontSize', FontSize);
+xlabel (strcat('Wavelength,', 32, dim_char),'FontSize', FontSize);
 ylabel ('Wavelength, nm','FontSize', FontSize);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-MaxM = MaxValue(ScatM./geomCS, fre, H, n_max); 
+MaxM = MaxValue(ScatM./geom_CS(:,:), fre, H, n_max); 
 
 fig11 = figure(11);
 set(fig11, 'Units', 'normalized', 'OuterPosition', [0.01 0.045 0.98 0.95]);
@@ -400,15 +405,15 @@ subplot(1,2,1); hold on;
 plot(MaxM(4,n_min:n_lim), MaxM(1,n_min:n_lim), 'r--o', ...
                 'LineWidth', LineWidth); 
 title('Max magnetic Quadrupole according to h','FontSize', FontSize);
-xlabel ('Height, nm','FontSize', FontSize);
+xlabel (strcat('Wavelength,', 32, dim_char),'FontSize', FontSize);
 ylabel ('Max Magnetic Quadrupole, a.u.','FontSize', FontSize);
 
-% Dependence: Wavelenght, corresponding to max Magnetic Quadrupole to Height
+% Dependence: Wavelength, corresponding to max Magnetic Quadrupole to Height
 subplot(1,2,2); hold on;
 plot(MaxM(4,n_min:n_lim), MaxM(3,n_min:n_lim).*norm_length, 'r--o', ...
                 'LineWidth', LineWidth);  
 title('the Wavelength coresponding to the Max M','FontSize', FontSize);
-xlabel ('Height, nm','FontSize', FontSize);
+xlabel (strcat('Wavelength,', 32, dim_char),'FontSize', FontSize);
 ylabel ('Wavelength, nm','FontSize', FontSize);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -434,30 +439,30 @@ subplot(1,2,1); hold on;
 plot(MaxTxkPx(4,n_min:n_lim), MaxTxkPx(1,n_min:n_lim) ./ abs(tempPx(n_min:n_lim)), 'r--o', ...
                 'LineWidth', LineWidth); 
 title('(TD+ED)/ED at the Freq of Max (TD+ED) according to h','FontSize', FontSize);
-xlabel ('Height, nm','FontSize', FontSize);
+xlabel (strcat('Wavelength,', 32, dim_char),'FontSize', FontSize);
 ylabel ('TD+ED/ED, a.u.','FontSize', FontSize);
 
-% Dependence: Wavelenght, corresponding to (TD+ED)/ED in the point of maximum TD+ED to Height
+% Dependence: Wavelength, corresponding to (TD+ED)/ED in the point of maximum TD+ED to Height
 % Зависимость длины волны, соответствующей отношению суммы тороидального и электрического дипольного моментов в точке максимума TD+ED, от высоты
 subplot(1,2,2); hold on;
 plot(MaxTxkPx(4,n_min:n_lim), MaxTxkPx(3,n_min:n_lim).*norm_length, 'r--o', ...
                 'LineWidth', LineWidth);  
 title('the Wavelength coresponding to the Max (TD+ED)/ED','FontSize', FontSize);
-xlabel ('Height, nm','FontSize', FontSize);
+xlabel (strcat('Wavelength,', 32, dim_char),'FontSize', FontSize);
 ylabel ('Wavelength, nm','FontSize', FontSize);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 fig15 = figure (15);
 
-pl15 = @(n) plot (lambda_nm(n,:), ForScat(n,:)./geomCS, ...                 
+pl15 = @(n) plot (lambda_nm(n,:), ForScat(n,:)./geom_CS(n,:).*1e-5, ...                 
                  lambda_nm(n,:), ForScat(n,:)./BackScat(n,:), ...               
                  'LineWidth', LineWidth);
              %lambda_nm(n,:), BackScat(n,:).*1e16, ...    
              %lambda_nm(n,:), BackScat(n,:)./ForScat(n,:), ...
 axis15 = @(n) axis([-inf, Inf, -inf, Inf]);
 tit15 = @(n) title(strcat('Scattering (Patterns), h = ', num2str(H(n,1)), ' nm' ),'FontSize', FontSize);
-xlab15 = @() xlabel ('Wavelenght, nm','FontSize', FontSize);
+xlab15 = @() xlabel (strcat('Wavelength,', 32, dim_char),'FontSize', FontSize);
 ylab15 = @() ylabel ('Far-field Scattering, a.u.', 'FontSize', FontSize);
 leg15 = @() legend({'Forward Scattering', 'Forward/Backward Scattering'},'FontSize', FontSizeLeg);
 slider_toroidal( fig15, pl15, axis15, xlab15, ylab15, leg15, tit15, n, n_min, n_max, H );
@@ -467,20 +472,20 @@ slider_toroidal( fig15, pl15, axis15, xlab15, ylab15, leg15, tit15, n, n_min, n_
 
 fig17 = figure (17); %phases
 
-pl17 = @(n) plot (lambda_nm(n,:), angle(Dx(n,:))./pi, ...
+pl17 = @(n) plot (lambda_nm(n,:), angle(-Dx(n,:))./pi, ...
                 lambda_nm(n,:), angle(my(n,:))./pi, ...
-                lambda_nm(n,:), angle(Dx(n,:))./pi+angle(my(n,:))./pi, ...
+                lambda_nm(n,:), angle(Qxz(n,:))./pi, ...
                 'LineWidth', LineWidth);
             
-%               lambda_nm(n,:), angle(Tx(n,:))./geomCS, ...
-%               lambda_nm(n,:), angle(my(n,:))./geomCS, ...
-%               lambda_nm(n,:), angle(my(n,:))./geomCS, ...
-%               lambda_nm(n,:), angle(my(n,:))./geomCS, ...
+%               lambda_nm(n,:), angle(Tx(n,:))./geom_CS(n,:), ...
+%               lambda_nm(n,:), angle(my(n,:))./geom_CS(n,:), ...
+%               lambda_nm(n,:), angle(my(n,:))./geom_CS(n,:), ...
+%               lambda_nm(n,:), angle(my(n,:))./geom_CS(n,:), ...
 axis17 = @(n) axis([-inf, Inf, -inf, inf]);
 tit17 = @(n) title(strcat('Phases of moments, h = ', num2str(H(n,1)), ' nm' ),'FontSize', FontSize);
-xlab17 = @() xlabel ('Wavelenght, nm','FontSize', FontSize);
+xlab17 = @() xlabel (strcat('Wavelength,', 32, dim_char),'FontSize', FontSize);
 ylab17 = @() ylabel ('Phase, pi','FontSize', FontSize);
-leg17 = @() legend({'angle(Dx)', 'angle(my)','Sum'},'FontSize', FontSizeLeg);
+leg17 = @() legend({'TED', 'MD', 'Qxz', 'Qzx'},'FontSize', FontSizeLeg);
 slider_toroidal( fig17, pl17, axis17, xlab17, ylab17, leg17, tit17, n, n_min, n_max, H );
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -488,7 +493,7 @@ slider_toroidal( fig17, pl17, axis17, xlab17, ylab17, leg17, tit17, n, n_min, n_
 
 %{
 
-MaxTxk = MaxValue(abs(TxK)./geomCS, fre, H, n_max); % вывод нужных значений в файлы % writing values at files
+MaxTxk = MaxValue(abs(TxK)./geom_CS(n,:), fre, H, n_max); % вывод нужных значений в файлы % writing values at files
 
 scat_TED_to_H(:,1)=MaxScatD(4,n_min:n_lim);
 scat_TED_to_H(:,2)=MaxScatD(1,n_min:n_lim);

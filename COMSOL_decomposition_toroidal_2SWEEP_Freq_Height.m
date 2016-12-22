@@ -1,5 +1,5 @@
 % Multipole Decomposotion with toroidal moment separation.
-% ver 4.03
+% ver 4.02
 
 clc
 clear all;
@@ -19,7 +19,7 @@ FontSizeLeg = 19;       % font size at the legends % размер шрифта в легендах
 LineWidth = 2.3; 		% Line Width at the graphics % толщина линии на графиках            
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Independent Variables
-rad = 50e-9;   % base edge of pyramid/parallelepiped/etc or radius of sphere/cilinder/cone/etc, in METERS, MANUALLY, for Normalization! MUST BE CHECKED  
+rad = 125e-9;   % base edge of pyramid/parallelepiped/etc or radius of sphere/cilinder/cone/etc, in METERS, MANUALLY, for Normalization! MUST BE CHECKED  
                 % сторона основания пирамиды В МЕТРАХ, ПРОВЕРЯТЬ если нормируем на эффективное сечение!
 %geomCS = rad^2; % effective geometrical cross-section for normalization, if it has square shape 
                 % эффективное поперечное сечение рассеяния для нормировки на него
@@ -535,7 +535,7 @@ xlab5 = @() xlabel ('Wavelenght, nm','FontSize', FontSize);
 ylab5 = @() ylabel ('Multipoles Contributions, um^2','FontSize', FontSize);
 leg5 = @() legend({'scat D ', 'scat m', 'scat Q', 'scat M', 'scat O', 'Sum Scat'},'FontSize', FontSizeLeg);
 slider_toroidal( fig5, pl5, axis5, xlab5, ylab5, leg5, tit5, n, n_min, n_max, H );
-
+%{
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % At the MaxValue 
@@ -717,7 +717,7 @@ xlabel ('Height, nm','FontSize', FontSize);
 ylabel ('Wavelength, nm','FontSize', FontSize);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%}
 fig15 = figure (15);
 
 pl15 = @(n) plot (lambda_nm(n,:), ForScat(n,:)./geomCS, ...                 

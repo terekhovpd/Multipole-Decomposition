@@ -1,10 +1,12 @@
 % Убирает цифру в названии файлов. Например 'Px1.dat' в 'Px.dat'
-% ver 4.02
+% ver 5.0
 
-n = 1
+n = 2;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+norm_length       = dlmread  (strcat('dim_value',num2str(n),'.dat'));
+dim_char          = fileread (strcat('dim_name',num2str(n),'.dat'));
 fre               = dlmread (strcat('fre', num2str(n), '.dat'));
 H                 = dlmread (strcat('H', num2str(n), '.dat'));
 Px                = dlmread (strcat('Px', num2str(n), '.dat'));
@@ -56,6 +58,8 @@ BackScatPoint     = dlmread (strcat('BackScatPoint', num2str(n), '.dat'));
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 dlmwrite ('fre.dat', fre, 'delimiter', '\t');
+dlmwrite ('dim_value.dat', norm_length, 'delimiter', '\t');
+filewrite ('dim_name.dat', dim_char);
 dlmwrite ('H.dat', H, 'delimiter', '\t');
 dlmwrite ('Px.dat', Px, 'delimiter', '\t');
 dlmwrite ('Py.dat', Py, 'delimiter', '\t');
@@ -105,6 +109,8 @@ dlmwrite ('ForScatPoint.dat', ForScatPoint, 'delimiter', '\t');
 dlmwrite ('BackScatPoint.dat', BackScatPoint, 'delimiter', '\t');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+delete (strcat('dim_value',num2str(n),'.dat'));
+delete (strcat('dim_name',num2str(n),'.dat'));
 delete (strcat('fre', num2str(n), '.dat'));
 delete (strcat('H', num2str(n), '.dat'));
 delete (strcat('Px', num2str(n), '.dat'));

@@ -5,7 +5,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-button = questdlg('Are you sure do you want to delete calculation?','Adequacy test','Yes','No','Yes')
+button = questdlg('Are you sure do you want to delete calculation?','Adequacy test','Yes','No','Yes');
 switch button
 	case 'Yes'
 
@@ -171,8 +171,8 @@ switch button
 		dlmwrite ('ForScatPoint.dat', ForScatPoint, 'delimiter', '\t');
 		dlmwrite ('BackScatPoint.dat', BackScatPoint, 'delimiter', '\t');
 
-		buttonYes = questdlg(strcat('Calculation ¹', num2str(n),' has been deleted'),'Success!','Ok','Ok')
+		buttonYes = questdlg(strcat('Calculation ¹', num2str(n),' has been deleted'),'Success!','Ok','Ok');
 
 	case 'No'
-		buttonNo = questdlg('Operation has been canceled','Cancel','Ok','Ok')
+		buttonNo = questdlg('Operation has been canceled','Cancel','Ok','Ok');
 end
