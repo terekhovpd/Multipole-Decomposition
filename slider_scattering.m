@@ -1,3 +1,8 @@
+%ver 5.1
+%19.03.2017
+% Internal function for scattering patterns, allows to create second slider
+
+
 function slider_scattering( fig, pl, pol1, pol2, bound, ss, n, n_min, n_max, f, f_min, f_max, fre, h, norm_length)
 
 set(fig, 'Units', 'normalized', 'OuterPosition', [0.01 0.045 0.98 0.95]);

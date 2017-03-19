@@ -7,6 +7,7 @@ clc
 clear all;
 %% Control panel for scattering patterns
 % 0 to disable, any another number to activate
+% Неплохо б сделать граф интерфейс в след версиях
 Electric_dipole=1;
 Magnetic_dipole=1;
 Electric_quadrupole=1;
