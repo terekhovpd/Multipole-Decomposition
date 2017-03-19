@@ -1,3 +1,8 @@
+%ver 5.1
+%19.03.2017
+% Internal function for data_export
+
+
 function norm_length = out_of_comsol
 
 d = dialog('Name','Dimension from COMSOL','Units', 'normalized', 'Position', [0.3 0.4 0.4 0.24]);

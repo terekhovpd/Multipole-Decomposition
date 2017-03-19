@@ -1,7 +1,8 @@
 % Добавляет цифру в названии файлов. Например 'Px.dat' в 'Px1.dat' 
-% ver 5.0
+% ver 5.1
+%19.03.2017
 
-n = 1;
+n = 2;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -51,6 +52,10 @@ Lambday = dlmread ('Lambday.dat');
 Lambdaz = dlmread ('Lambdaz.dat');
 absCS   = dlmread ('absCS.dat');
 scat    = dlmread ('scat.dat');
+ForScat           = dlmread ('ForScat.dat');
+BackScat          = dlmread ('BackScat.dat');
+ForScatPoint      = dlmread ('ForScatPoint.dat');
+BackScatPoint     = dlmread ('BackScatPoint.dat');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -100,7 +105,10 @@ dlmwrite (strcat('Lambday', num2str(n), '.dat'), Lambday, 'delimiter', '\t');
 dlmwrite (strcat('Lambdaz', num2str(n), '.dat'), Lambdaz, 'delimiter', '\t');
 dlmwrite (strcat('absCS', num2str(n), '.dat'), absCS, 'delimiter', '\t');
 dlmwrite (strcat('scat', num2str(n), '.dat'), scat, 'delimiter', '\t');
-
+dlmwrite (strcat('ForScat', num2str(n), '.dat'), ForScat, 'delimiter', '\t');
+dlmwrite (strcat('BackScat', num2str(n), '.dat'), BackScat, 'delimiter', '\t');
+dlmwrite (strcat('ForScatPoint', num2str(n), '.dat'), ForScatPoint, 'delimiter', '\t');
+dlmwrite (strcat('BackScatPoint', num2str(n), '.dat'), BackScatPoint, 'delimiter', '\t');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -148,3 +156,7 @@ delete ('Lambday.dat');
 delete ('Lambdaz.dat');
 delete ('absCS.dat');
 delete ('scat.dat');
+delete ('ForScat.dat');
+delete ('BackScat.dat');
+delete ('ForScatPoint.dat');
+delete ('BackScatPoint.dat');

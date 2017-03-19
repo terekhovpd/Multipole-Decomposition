@@ -1,21 +1,23 @@
 % Data concatenation
-% ver 4.1
+% Allows to merge different COMSOL calculations for same conditions (geometry, etc)
+% ver 5.1
+% 19.03.2017 
 
 clc
 clear all;
- 
-n = 2;     	             
+
+n = 2;
 
 fre = cell(n,1);
-	for i =1:n
-		fre{i} = dlmread (strcat('fre', num2str(i), '.dat'));
-	end
+    for i =1:n
+    	fre{i} = dlmread (strcat('fre', num2str(i), '.dat'));
+    end
 
 norm_length       = dlmread  (strcat('dim_value',num2str(n),'.dat')); %ѕишем файлы с нанометрами и прочим бла бла бла
 dim_char          = fileread (strcat('dim_name',num2str(n),'.dat'));
 
 % Height, Meters
-% ¬ысота в метрах
+% Высота в метрах
 H = cell(n,1);
 	for i =1:n
 		H{i} = dlmread (strcat('H', num2str(i), '.dat'));
@@ -239,22 +241,22 @@ absCS = cell(n,1);
 ForScat = cell(n,1);
 	for i =1:n
 		ForScat{i} = dlmread (strcat('ForScat', num2str(i), '.dat'));
-	end	
+	end
 
 BackScat = cell(n,1);
 	for i =1:n
 		BackScat{i} = dlmread (strcat('BackScat', num2str(i), '.dat'));
-	end		
+	end
 
 ForScatPoint = cell(n,1);
 	for i =1:n
 		ForScatPoint{i} = dlmread (strcat('ForScatPoint', num2str(i), '.dat'));
-	end	
+	end
 
 BackScatPoint = cell(n,1);
 	for i =1:n
 		BackScatPoint{i} = dlmread (strcat('BackScatPoint', num2str(i), '.dat'));
-	end		
+	end
 
 clear i;
 
@@ -266,13 +268,13 @@ FRE = NaN( 1, size(fre{1},2) + size(fre{2}, 2) );
 n = 1;
 i = 1;
 j = 1;
-while n 
+while n
 	if fre{1}(1,i) < fre{2}(1,j)
 		FRE(n) = fre{1}(1,i);
 		mask( 1 : size(fre{1}, 1), n ) = 1;
 		mask( size(fre{1}, 1) + 1  :  size(fre{1}, 1) + size(fre{2}, 1), n ) = 0;
 		i = i+1;
-		if i > size(fre{1},2)  
+		if i > size(fre{1},2)
 			FRE( n+1 : n + size( fre{2}(1, j:end), 2) ) = fre{2}(1, j:end);
 			mask( 1 : size(fre{1}, 1), n+1 : n + size( fre{2}(1, j:end), 2) ) = 0;
 			mask( size(fre{1}, 1) + 1  :  size(fre{1}, 1) + size(fre{2}, 1),  n+1 : n + size( fre{2}(1, j:end), 2) ) = 1;
@@ -320,51 +322,51 @@ mask = mask(:, 1:i);
 FRE = FRE(:, 1:i);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % —шиваем все данные
-Px 		= Mask( Px, fre, mask );
-Py 		= Mask( Py, fre, mask );
-Pz 		= Mask( Pz, fre, mask );
-Tx 		= Mask( Tx, fre, mask );
-Ty 		= Mask( Ty, fre, mask );
-Tz 		= Mask( Tz, fre, mask );
-mx 		= Mask( mx, fre, mask );
-my 		= Mask( my, fre, mask );
-mz 		= Mask( mz, fre, mask );
-Mxx 	= Mask( Mxx, fre, mask );
-Mxy 	= Mask( Mxy, fre, mask );
-Mxz 	= Mask( Mxz, fre, mask );
-Myx 	= Mask( Myx, fre, mask );
-Myy 	= Mask( Myy, fre, mask );
-Myz 	= Mask( Myz, fre, mask );
-Mzx 	= Mask( Mzx, fre, mask );
-Mzy 	= Mask( Mzy, fre, mask );
-Mzz 	= Mask( Mzz, fre, mask );
-Qxx 	= Mask( Qxx, fre, mask );
-Qyy 	= Mask( Qyy, fre, mask );
-Qzz 	= Mask( Qzz, fre, mask );
-Qxy 	= Mask( Qxy, fre, mask );
-Qxz 	= Mask( Qxz, fre, mask );
-Qyx 	= Mask( Qyx, fre, mask );
-Qyz 	= Mask( Qyz, fre, mask );
-Qzx 	= Mask( Qzx, fre, mask );
-Qzy 	= Mask( Qzy, fre, mask );
-Oxxx 	= Mask( Oxxx, fre, mask );
-Oxxy 	= Mask( Oxxy, fre, mask );
-Oxxz 	= Mask( Oxxz, fre, mask );
-Oyyx 	= Mask( Oyyx, fre, mask );
-Oyyy 	= Mask( Oyyy, fre, mask );
-Oyyz 	= Mask( Oyyz, fre, mask );
-Ozzx 	= Mask( Ozzx, fre, mask );
-Ozzy 	= Mask( Ozzy, fre, mask );
-Ozzz 	= Mask( Ozzz, fre, mask );
-Oxyz 	= Mask( Oxyz, fre, mask );
-Lambdax = Mask( Lambdax, fre, mask );
-Lambday = Mask( Lambday, fre, mask );
-Lambdaz = Mask( Lambdaz, fre, mask );
-scat 	= Mask( scat, fre, mask );
-absCS 	= Mask( absCS, fre, mask );
-ForScat = Mask( ForScat,fre,mask );
-BackScat = Mask( BackScat,fre,mask );
-ForScatPoint = Mask( ForScatPoint,fre,mask );
+Px 		      = Mask( Px, fre, mask );
+Py 		      = Mask( Py, fre, mask );
+Pz 		      = Mask( Pz, fre, mask );
+Tx 		      = Mask( Tx, fre, mask );
+Ty 		      = Mask( Ty, fre, mask );
+Tz 		      = Mask( Tz, fre, mask );
+mx 		      = Mask( mx, fre, mask );
+my 		      = Mask( my, fre, mask );
+mz 		      = Mask( mz, fre, mask );
+Mxx 	      = Mask( Mxx, fre, mask );
+Mxy 	      = Mask( Mxy, fre, mask );
+Mxz 	      = Mask( Mxz, fre, mask );
+Myx 	      = Mask( Myx, fre, mask );
+Myy 	      = Mask( Myy, fre, mask );
+Myz 	      = Mask( Myz, fre, mask );
+Mzx 	      = Mask( Mzx, fre, mask );
+Mzy 	      = Mask( Mzy, fre, mask );
+Mzz 	      = Mask( Mzz, fre, mask );
+Qxx 	      = Mask( Qxx, fre, mask );
+Qyy 	      = Mask( Qyy, fre, mask );
+Qzz 	      = Mask( Qzz, fre, mask );
+Qxy 	      = Mask( Qxy, fre, mask );
+Qxz 	      = Mask( Qxz, fre, mask );
+Qyx 	      = Mask( Qyx, fre, mask );
+Qyz 	      = Mask( Qyz, fre, mask );
+Qzx 	      = Mask( Qzx, fre, mask );
+Qzy 	      = Mask( Qzy, fre, mask );
+Oxxx 	      = Mask( Oxxx, fre, mask );
+Oxxy 	      = Mask( Oxxy, fre, mask );
+Oxxz 	      = Mask( Oxxz, fre, mask );
+Oyyx 	      = Mask( Oyyx, fre, mask );
+Oyyy 	      = Mask( Oyyy, fre, mask );
+Oyyz 	      = Mask( Oyyz, fre, mask );
+Ozzx 	      = Mask( Ozzx, fre, mask );
+Ozzy 	      = Mask( Ozzy, fre, mask );
+Ozzz 	      = Mask( Ozzz, fre, mask );
+Oxyz 	      = Mask( Oxyz, fre, mask );
+Lambdax       = Mask( Lambdax, fre, mask );
+Lambday       = Mask( Lambday, fre, mask );
+Lambdaz       = Mask( Lambdaz, fre, mask );
+scat 	      = Mask( scat, fre, mask );
+absCS 	      = Mask( absCS, fre, mask );
+ForScat       = Mask( ForScat,fre,mask );
+BackScat      = Mask( BackScat,fre,mask );
+ForScatPoint  = Mask( ForScatPoint,fre,mask );
 BackScatPoint = Mask( BackScatPoint,fre,mask );
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ƒелаем вектор высот
@@ -374,15 +376,15 @@ H = [ H{1}(:,1); H{2}(:,1) ];
 [H, I] = sort(H); % —ортируем вектор высот
 %—ортируем все остальные данные в соответствии сортировкой вектора высот
 mask 	= mask(I,:);
-Px 		= Px (I,:);	
-Py 		= Py (I,:);	
-Pz 		= Pz (I,:);	
-Tx 		= Tx (I,:);	
-Ty 		= Ty (I,:);	
-Tz 		= Tz (I,:);	
-mx 		= mx (I,:);	
-my 		= my (I,:);	
-mz 		= mz (I,:);	
+Px 		= Px (I,:);
+Py 		= Py (I,:);
+Pz 		= Pz (I,:);
+Tx 		= Tx (I,:);
+Ty 		= Ty (I,:);
+Tz 		= Tz (I,:);
+mx 		= mx (I,:);
+my 		= my (I,:);
+mz 		= mz (I,:);
 Mxx 	= Mxx (I,:);
 Mxy 	= Mxy (I,:);
 Mxz 	= Mxz (I,:);
@@ -413,8 +415,8 @@ Ozzz 	= Ozzz (I,:);
 Oxyz 	= Oxyz (I,:);
 Lambdax = Lambdax (I,:);
 Lambday = Lambday (I,:);
-Lambdaz = Lambdaz (I,:); 
-scat 	= scat (I,:);	
+Lambdaz = Lambdaz (I,:);
+scat 	= scat (I,:);
 absCS 	= absCS	(I,:);
 ForScat = ForScat (I,:);
 BackScat = BackScat (I,:);
@@ -424,60 +426,61 @@ BackScatPoint = BackScatPoint (I,:);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ”дал€ем повтор€ющиес€ строки
 i=1;
+number = size(mask,2);
 while i < length(H)
 	if H(i) == H(i+1)
 		H(i+1) = [];
-		mask (i,:) = [];
-		Px (i,:) = []; 		
-		Py (i,:) = []; 		
-		Pz (i,:) = []; 		
-		Tx (i,:) = []; 		
-		Ty (i,:) = []; 		
-		Tz (i,:) = []; 		
-		mx (i,:) = []; 		
-		my (i,:) = []; 		
-		mz (i,:) = []; 		
-		Mxx (i,:) = []; 	
-		Mxy (i,:) = []; 	
-		Mxz (i,:) = []; 	
-		Myx (i,:) = []; 	
-		Myy (i,:) = []; 	
-		Myz (i,:) = []; 	
-		Mzx (i,:) = []; 	
-		Mzy (i,:) = []; 	
-		Mzz (i,:) = []; 	
-		Qxx (i,:) = []; 	
-		Qyy (i,:) = []; 	
-		Qzz (i,:) = []; 	
-		Qxy (i,:) = []; 	
-		Qxz (i,:) = []; 	
-		Qyx (i,:) = []; 	
-		Qyz (i,:) = []; 	
-		Qzx (i,:) = []; 	
-		Qzy (i,:) = []; 	
-		Oxxx (i,:) = []; 	
-		Oxxy (i,:) = []; 	
-		Oxxz (i,:) = []; 	
-		Oyyx (i,:) = []; 	
-		Oyyy (i,:) = []; 	
-		Oyyz (i,:) = []; 	
-		Ozzx (i,:) = []; 	
-		Ozzy (i,:) = []; 	
-		Ozzz (i,:) = []; 	
-		Oxyz (i,:) = []; 	
-		Lambdax (i,:) = []; 
-		Lambday (i,:) = []; 
-		Lambdaz (i,:) = []; 
-		scat (i,:) = []; 	
-		absCS (i,:) = []; 
-		ForScat (i,:) = [];
-		BackScat (i,:) = [];
-		ForScatPoint (i,:) = [];
-		BackScatPoint (i,:) = [];
-		ForScatPow (i,:) = [];
-		BackScatPow (i,:) = [];
-		ForScatPointPow (i,:) = [];
-		BackScatPointPow  (i,:) = [];	
+		mask = decomp_internal_func_1 (mask,i,number);
+		Px  = decomp_internal_func_1 (Px,i,number);
+		Py  = decomp_internal_func_1 (Py,i,number);
+		Pz  = decomp_internal_func_1 (Pz,i,number);
+		Tx  = decomp_internal_func_1 (Tx,i,number);
+		Ty  = decomp_internal_func_1 (Ty,i,number);
+		Tz  = decomp_internal_func_1 (Tz,i,number);
+		mx  = decomp_internal_func_1 (mx,i,number);
+		my  = decomp_internal_func_1 (my,i,number);
+		mz  = decomp_internal_func_1 (mz,i,number);
+		Mxx = decomp_internal_func_1 (Mxx,i,number);
+		Mxy = decomp_internal_func_1 (Mxy,i,number);
+		Mxz = decomp_internal_func_1 (Mxz,i,number);
+		Myx = decomp_internal_func_1 (Myx,i,number);
+		Myy = decomp_internal_func_1 (Myy,i,number);
+		Myz = decomp_internal_func_1 (Myz,i,number);
+		Mzx = decomp_internal_func_1 (Mzx,i,number);
+		Mzy = decomp_internal_func_1 (Mzy,i,number);
+		Mzz = decomp_internal_func_1 (Mzz,i,number);
+		Qxx = decomp_internal_func_1 (Qxx,i,number);
+		Qyy = decomp_internal_func_1 (Qyy,i,number);
+		Qzz = decomp_internal_func_1 (Qzz,i,number);
+		Qxy = decomp_internal_func_1 (Qxy,i,number);
+		Qxz = decomp_internal_func_1 (Qxz,i,number);
+		Qyx = decomp_internal_func_1 (Qyx,i,number);
+		Qyz = decomp_internal_func_1 (Qyz,i,number);
+		Qzx = decomp_internal_func_1 (Qzx,i,number);
+		Qzy = decomp_internal_func_1 (Qzy,i,number);
+		Oxxx = decomp_internal_func_1 (Oxxx,i,number);
+		Oxxy = decomp_internal_func_1 (Oxxy,i,number);
+		Oxxz = decomp_internal_func_1 (Oxxz,i,number);
+		Oyyx = decomp_internal_func_1 (Oyyx,i,number);
+		Oyyy = decomp_internal_func_1 (Oyyy,i,number);
+		Oyyz = decomp_internal_func_1 (Oyyz,i,number);
+		Ozzx = decomp_internal_func_1 (Ozzx,i,number);
+		Ozzy = decomp_internal_func_1 (Ozzy,i,number);
+		Ozzz = decomp_internal_func_1 (Ozzz,i,number);
+		Oxyz = decomp_internal_func_1 (Oxyz,i,number);
+		Lambdax = decomp_internal_func_1 (Lambdax,i,number);
+		Lambday = decomp_internal_func_1 (Lambday,i,number);
+		Lambdaz = decomp_internal_func_1 (Lambdaz,i,number);
+		scat = decomp_internal_func_1 (scat,i,number);
+		absCS = decomp_internal_func_1 (absCS,i,number);
+		ForScat = decomp_internal_func_1 (ForScat,i,number);
+		BackScat = decomp_internal_func_1 (BackScat,i,number);
+		ForScatPoint = decomp_internal_func_1 (ForScatPoint,i,number);
+		BackScatPoint = decomp_internal_func_1 (BackScatPoint,i,number);
+		% ForScatPow = decomp_internal_func_1 (ForScatPow,i,number);
+		% BackScatPow = decomp_internal_func_1 (BackScatPow,i,number);
+		% ForScatPointPow = decomp_internal_func_1 (ForScatPointPow,i,number);
+		% BackScatPointPow = decomp_internal_func_1 (BackScatPointPow,i,number);
 	else
 		i = i+1;
 	end

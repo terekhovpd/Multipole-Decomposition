@@ -1,5 +1,6 @@
-% Удаляет расчёт
-% ver 4.51
+% Allows to delete calculation for 1 parameter value.
+% ver 5.1
+% 19.03.2017
 
 %n = 3 % Номер расчёта, который надо удалить
 

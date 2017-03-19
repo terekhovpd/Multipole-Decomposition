@@ -1,5 +1,6 @@
 % Multipole Decomposotion with toroidal moment separation.
-% ver 4.02
+% ver 4.0
+%NOT SUPPORTED ANYMORE. please use Data_Export.m and MATLAB_decomposition
 
 clc
 clear all;
