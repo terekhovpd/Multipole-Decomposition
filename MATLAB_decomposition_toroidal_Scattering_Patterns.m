@@ -181,7 +181,19 @@ FullOzzz = Ozzz-3.*Lambdaz;
 ScatO = ((k0.^8.*epsd.^2./(3780.*pi.*eps0.^2.*vd2.*mu0)).*(6.*abs(FullOxyz).^2+3.*abs(FullOxxy).^2+...  % Electric Octupole % электрический октуполь
     3.*abs(FullOxxz).^2+3.*abs(FullOyyx).^2+3.*abs(FullOyyz).^2+3.*abs(FullOzzx).^2+...
     3.*abs(FullOzzy).^2+abs(FullOxxx).^2+abs(FullOyyy).^2+abs(FullOzzz).^2)) ./ Iinc ;          
+ 
+
+
+%% Multipole components for comparison. Notation: Mult_TED, Mult_MD, etc
+
+    Mult_TED = abs(sqrt(Dx.^2+Dy.^2+Dz.^2));
+    Mult_MD  = abs((1./vd2) .* sqrt(mx.^2+my.^2+mz.^2));
+    Mult_EQ  = abs(-(i*kd./6) .* sqrt(Qxx.^2+Qxy.^2+Qxz.^2+Qyx.^2+Qyy.^2+Qyz.^2+Qzx.^2+Qzy.^2+Qzz.^2));
+    Mult_MQ  = abs((i*kd./(2.*vd)) .* sqrt(Mxx.^2+Mxy.^2+Mxz.^2+Myx.^2+Myy.^2+Myz.^2+Mzx.^2+Mzy.^2+Mzz.^2));
+    Mult_OCT = abs((kd.^2./6) .* sqrt(FullOyyy.^2+FullOxxx.^2+FullOzzz.^2+(6.*FullOxyz).^2+(3.*FullOxxy).^2+(3.*FullOxxz).^2+(3.*FullOyyx).^2+(3.*FullOyyz).^2+(3.*FullOzzx).^2+(3.*FullOzzy).^2))  ;     
                 
+
+
 %% Scattering cross-section as sum of multipole components
 % Сечение рассеяние как сумма мультипольных компонентов
 ScatCS = (ScatD + Scatm + ScatQ + ScatM + ScatO) ; 
@@ -254,21 +266,40 @@ slider_toroidal( fig3, pl3, axis3, xlab3, ylab3, leg3, tit3, n, n_min, n_max, H 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Scattering cross-sections only % Только рассеяния
-fig4 = figure (4);
+% fig4 = figure (4);
 
-pl4 = @(n) plot (lambda_nm(n,:), ScatCS(n,:)./geom_CS(n,:), ...
-                lambda_nm(n,:), scat(n,:)./geom_CS(n,:), ...
+% pl4 = @(n) plot (lambda_nm(n,:), ScatCS(n,:)./geom_CS(n,:), ...
+%                 lambda_nm(n,:), scat(n,:)./geom_CS(n,:), ...
+%                 'LineWidth', LineWidth);
+% axis4 = @(n) axis([-inf, Inf, -inf, 1.05*(max(max([scat./min(geom_CS(:,1)), ScatCS./min(geom_CS(:,1))]))) ]);
+% tit4 = @(n) title (strcat('Cross section, h = ',32, num2str(H(n,1)), 32, dim_char),'FontSize', FontSize);
+% xlab4 = @() xlabel (strcat('Wavelength,', 32, dim_char),'FontSize', FontSize);
+% ylab4 = @() ylabel ('Cross section, nm^2','FontSize', FontSize);
+% leg4 = @() legend({'Scattering cross section', 'Scattering cross section from COMSOL'},'FontSize', FontSizeLeg);
+% slider_toroidal( fig4, pl4, axis4, xlab4, ylab4, leg4, tit4, n, n_min, n_max, H );
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+fig4 = figure ();
+
+pl4 = @(n) plot (lambda_nm(n,:), Mult_TED(n,:)./geom_CS(n,:), ...
+                lambda_nm(n,:), Mult_MD(n,:)./geom_CS(n,:), ...
+                lambda_nm(n,:), Mult_EQ(n,:)./geom_CS(n,:), ...
+                lambda_nm(n,:), Mult_MQ(n,:)./geom_CS(n,:), ...
+                lambda_nm(n,:), Mult_OCT(n,:)./geom_CS(n,:), ...
                 'LineWidth', LineWidth);
-axis4 = @(n) axis([-inf, Inf, -inf, 1.05*(max(max([scat./min(geom_CS(:,1)), ScatCS./min(geom_CS(:,1))]))) ]);
+%axis4 = @(n) axis([-inf, Inf, -inf, 1.05*(max(max([Mult_TED./min(geom_CS(:,1)), Mult_MD./min(geom_CS(:,1)), Mult_EQ./min(geom_CS(:,1)), Mult_MQ./min(geom_CS(:,1)), Mult_OCT./min(geom_CS(:,1))]))) ]);
+axis4 = @(n) axis([-inf, Inf, -inf, inf ]);
 tit4 = @(n) title (strcat('Cross section, h = ',32, num2str(H(n,1)), 32, dim_char),'FontSize', FontSize);
 xlab4 = @() xlabel (strcat('Wavelength,', 32, dim_char),'FontSize', FontSize);
-ylab4 = @() ylabel ('Cross section, nm^2','FontSize', FontSize);
-leg4 = @() legend({'Scattering cross section', 'Scattering cross section from COMSOL'},'FontSize', FontSizeLeg);
+ylab4 = @() ylabel ('Multipoles contributions to Electric Field amplitude, a.u.','FontSize', FontSize);
+leg4 = @() legend({'TED', 'MD', 'EQ', 'MQ', 'OCT'},'FontSize', FontSizeLeg);
 slider_toroidal( fig4, pl4, axis4, xlab4, ylab4, leg4, tit4, n, n_min, n_max, H );
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-fig5 = figure (5);
+fig5 = figure ();
 
 pl5 = @(n) plot (lambda_nm(n,:), ScatD(n,:)./geom_CS(n,:), ...
                 lambda_nm(n,:), Scatm(n,:)./geom_CS(n,:), ...
@@ -276,12 +307,13 @@ pl5 = @(n) plot (lambda_nm(n,:), ScatD(n,:)./geom_CS(n,:), ...
                 lambda_nm(n,:), ScatM(n,:)./geom_CS(n,:), ...
                 lambda_nm(n,:), ScatO(n,:)./geom_CS(n,:), ...
                 lambda_nm(n,:), ScatCS(n,:)./geom_CS(n,:), ...
+                lambda_nm(n,:), scat(n,:)./geom_CS(n,:), ... 
                 'LineWidth', LineWidth);
 axis5 = @(n) axis([-inf, Inf, -inf, 1.05*(max(max([ScatD./min(geom_CS(:,1)), Scatm./min(geom_CS(:,1)), ScatQ./min(geom_CS(:,1)), ScatM./min(geom_CS(:,1)), ScatO./min(geom_CS(:,1)), ScatCS./min(geom_CS(:,1))]))) ]);
 tit5 = @(n) title (strcat('Multipoles Contributions to Scattering, h = ',32, num2str(H(n,1)), 32, dim_char),'FontSize', FontSize);
 xlab5 = @() xlabel (strcat('Wavelength,', 32, dim_char),'FontSize', FontSize);
 ylab5 = @() ylabel ('Multipoles Contributions, nm^2','FontSize', FontSize);
-leg5 = @() legend({'scat D ', 'scat m', 'scat Q', 'scat M', 'scat O', 'Sum Scat'},'FontSize', FontSizeLeg);
+leg5 = @() legend({'scat D ', 'scat m', 'scat Q', 'scat M', 'scat O', 'Sum Scat', 'Total scat (COMSOL)'},'FontSize', FontSizeLeg);
 slider_toroidal( fig5, pl5, axis5, xlab5, ylab5, leg5, tit5, n, n_min, n_max, H );
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -482,7 +514,25 @@ slider_toroidal( fig5, pl5, axis5, xlab5, ylab5, leg5, tit5, n, n_min, n_max, H 
 % 
 % 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
+
+fig15 = figure ();
+
+pl15 = @(n) plot (lambda_nm(n,:), ForScat(n,:)./(ForScat(n,:)+BackScat(n,:)+ absCS(n,:)), ...                 
+                 lambda_nm(n,:), BackScat(n,:)./(ForScat(n,:)+BackScat(n,:)+ absCS(n,:)), ... 
+                 lambda_nm(n,:), absCS(n,:)./(ForScat(n,:)+BackScat(n,:)+ absCS(n,:)), ...
+                 'LineWidth', LineWidth);
+             %lambda_nm(n,:), BackScat(n,:).*1e16, ...    
+             %lambda_nm(n,:), BackScat(n,:)./ForScat(n,:), ...
+axis15 = @(n) axis([-inf, Inf, -inf, 1]);
+tit15 = @(n) title(strcat('Scattering (Patterns), h = ', num2str(H(n,1)), ' nm' ),'FontSize', FontSize);
+xlab15 = @() xlabel (strcat('Wavelength,', 32, dim_char),'FontSize', FontSize);
+ylab15 = @() ylabel ('Transmission and Reflection', 'FontSize', FontSize);
+leg15 = @() legend({'Transmission', 'Reflection', 'Absorption'},'FontSize', FontSizeLeg);
+slider_toroidal( fig15, pl15, axis15, xlab15, ylab15, leg15, tit15, n, n_min, n_max, H );
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 %{
 fig17 = figure (17); %phases
 
