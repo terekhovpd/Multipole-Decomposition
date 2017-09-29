@@ -178,10 +178,11 @@ FullOxxx = Oxxx-3.*Lambdax;
 FullOyyy = Oyyy-3.*Lambday;
 FullOzzz = Ozzz-3.*Lambdaz;
 
-ScatO = ((k0.^8.*epsd.^2./(3780.*pi.*eps0.^2.*vd2.*mu0)).*(6.*abs(FullOxyz).^2+3.*abs(FullOxxy).^2+...  % Electric Octupole % электрический октуполь
+ScatO = (k0.^8.*epsd.^2./(1890.*pi.*eps0.^2)).*(6.*abs(FullOxyz).^2+3.*abs(FullOxxy).^2+...    % Electric Octupole % электрический октуполь
     3.*abs(FullOxxz).^2+3.*abs(FullOyyx).^2+3.*abs(FullOyyz).^2+3.*abs(FullOzzx).^2+...
-    3.*abs(FullOzzy).^2+abs(FullOxxx).^2+abs(FullOyyy).^2+abs(FullOzzz).^2)) ./ Iinc ;          
- 
+    3.*abs(FullOzzy).^2+abs(FullOxxx).^2+abs(FullOyyy).^2+abs(FullOzzz).^2) ./ Iinc ; 
+
+
 
 
 %% Multipole components for comparison. Notation: Mult_TED, Mult_MD, etc
